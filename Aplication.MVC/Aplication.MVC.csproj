@@ -15,4 +15,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.16" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Aplication.API.Consumer\Aplication.API.Consumer.csproj" />
+    <ProjectReference Include="..\Aplication.Modelos\Aplication.Modelos.csproj" />
+  </ItemGroup>
+
 </Project>

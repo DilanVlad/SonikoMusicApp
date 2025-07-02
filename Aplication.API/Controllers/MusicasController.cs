@@ -33,7 +33,7 @@ namespace Aplication.API.Controllers
         public async Task<ActionResult<IEnumerable<Musica>>> GetMusicasByArtista(string artistaId)
         {
             var musicas = await _context.Musicas
-                .Where(m => m.ArtistaId == artistaId && m.EsActiva)
+                .Where(m => m.ArtistaId == artistaId)
                 .Include(m => m.Artista)
                 .ToListAsync();
 
@@ -44,7 +44,9 @@ namespace Aplication.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Musica>> GetMusica(int id)
         {
-            var musica = await _context.Musicas.FindAsync(id);
+            var musica = await _context.Musicas
+                .Include(m => m.Artista)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (musica == null)
             {
@@ -115,6 +117,20 @@ namespace Aplication.API.Controllers
         private bool MusicaExists(int id)
         {
             return _context.Musicas.Any(e => e.Id == id);
+        }
+
+
+        // Metodo aparte
+        // GET: api/Musics/Search/termino
+        [HttpGet("Search/{termino}")]
+        public async Task<ActionResult<IEnumerable<Musica>>> SearchMusicas(string termino)
+        {
+            var musicas = await _context.Musicas
+                .Where(m => m.Titulo.Contains(termino) || m.Artista.Nombre.Contains(termino))
+                .Include(m => m.Artista)
+                .ToListAsync();
+
+            return musicas;
         }
     }
 }

@@ -27,6 +27,8 @@ namespace Aplication.Modelos
         // Relaciones
         public User Artista { get; set; }
         public Album Album { get; set; }
+
+
         public List<PlaylistMusica>? PlaylistMusicas { get; set; }
         public List<FavoritoMusica>? FavoritoMusicas { get; set; }
         public List<Calificacion>? Calificaciones { get; set; }

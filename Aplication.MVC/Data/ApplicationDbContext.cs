@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Aplication.Modelos;
 
 namespace Aplication.MVC.Data
 {
@@ -9,5 +10,6 @@ namespace Aplication.MVC.Data
             : base(options)
         {
         }
+        public DbSet<Aplication.Modelos.Musica> Musica { get; set; } = default!;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Aplication.API.Data;
 
 namespace Aplication.API
 {
@@ -14,7 +15,12 @@ namespace Aplication.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services
+            .AddControllers()
+            .AddNewtonsoftJson(
+                options => options.SerializerSettings.ReferenceLoopHandling
+                = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

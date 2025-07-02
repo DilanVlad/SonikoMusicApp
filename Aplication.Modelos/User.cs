@@ -21,7 +21,7 @@ namespace Aplication.Modelos
         // Usuario
         public List<Playlist>? Playlists { get; set; }
         public List<FavoritoMusica>? FavoritoMusicas { get; set; }
-        public List<FavoritoArtista>? FavoritoArtistas { get; set; }
+        //public List<FavoritoArtista>? FavoritoArtistas { get; set; }
         public List<Calificacion>? Calificaciones { get; set; }
         public List<Suscripcion>? Suscripciones { get; set; }
         public List<Notificacion>? Notificaciones { get; set; }

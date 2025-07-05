@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Aplication.API;
+using Application.Models.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Aplication.API.Data;
+using Microsoft.Identity;
 
 namespace Aplication.API
 {
@@ -10,11 +14,15 @@ namespace Aplication.API
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("AppDbContext") 
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection") 
                 ?? throw new InvalidOperationException("Connection string 'AppDbContext' not found.")));
 
-            // Add services to the container.
+            //Identity
+            builder.Services.AddDefaultIdentity<User>()
+                .AddRoles<Role>()
+                .AddEntityFrameworkStores<AppDbContext>();
 
+            // Add services to the container.
             builder.Services
             .AddControllers()
             .AddNewtonsoftJson(
@@ -25,6 +33,8 @@ namespace Aplication.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -36,8 +46,8 @@ namespace Aplication.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

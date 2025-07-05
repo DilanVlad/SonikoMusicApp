@@ -6,41 +6,159 @@
     <title>@ViewData["Title"] - Application.MVC</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Application.MVC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            height: 60px;
+        }
+
+        aside {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 200px;
+            height: calc(100vh - 60px);
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            border-right: 1px solid #dee2e6;
+            overflow-y: auto;
+        }
+
+        .main-wrapper {
+            margin-left: 200px;
+            margin-top: 60px;
+            min-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+        }
+
+            .main-wrapper > .container-fluid {
+                flex: 1;
+                padding: 0 15px;
+            }
+
+        footer {
+            margin-top: auto;
+            padding: 10px 15px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+        }
+
+            .search-bar input {
+                border: 1px solid #ddd;
+                padding: 5px 10px;
+                border-radius: 20px 0 0 20px;
+                width: 300px;
+            }
+
+            .search-bar button {
+                background: #007bff;
+                color: white;
+                border: none;
+                padding: 6px 15px;
+                border-radius: 0 20px 20px 0;
+                cursor: pointer;
+            }
+    </style>
 </head>
+
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Application.MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <!-- Brand/Logo -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-music"></i> MusicApp
+                </a>
+
+                <!-- Search Bar -->
+                <div class="d-flex flex-grow-1 mx-3">
+                    <form asp-controller="Music" asp-action="Search" method="get" class="search-bar">
+                        <input type="text" name="query" placeholder="Buscar música, artistas..." />
+                        <button type="submit">
+                            <i class="fas fa-search"></i> BUSCAR
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Login/Register or User Menu -->
+                <div class="d-flex">
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
+
+                <!-- Mobile toggle -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <aside>
+        <nav>
+            <div class="container-fluid">
+                <ul class="navbar-nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home"></i> Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Music" asp-action="Index">
+                            <i class="fas fa-music"></i> Músicas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Music" asp-action="Create">
+                            <i class="fas fa-plus"></i> Subir Música
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="User" asp-action="Favorites">
+                            <i class="fas fa-heart"></i> Favoritos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="User" asp-action="Library">
+                            <i class="fas fa-book"></i> Librería
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="main-wrapper">
+        <div class="container-fluid">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer class="border-top text-muted" style="background-color: #f8f9fa;">
+            <div>
+                &copy; 2025 - Application.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Application.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

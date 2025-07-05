@@ -1,0 +1,61 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Application.Models.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user"></i> @User.Identity.Name
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <h6 class="dropdown-header">
+                    @{
+                        var user = await UserManager.GetUserAsync(User);
+                        var roles = await UserManager.GetRolesAsync(user);
+                        var userRole = roles.FirstOrDefault();
+                    }
+                    @switch (userRole)
+                    {
+                        case "admins":
+                            <span>Administrador</span>
+                            break;
+                        case "artists":
+
+                            <span>Artista</span>
+                            break;
+                        case "users":
+
+                            <span>Usuario</span>
+                            break;
+                        default:
+
+                            <span>Usuario</span>
+                            break;
+                    }
+                </h6>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" class="d-inline">
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="btn-group">
+        <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Login">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        <a class="btn btn-primary" asp-controller="Account" asp-action="Register">
+            <i class="fas fa-user-plus"></i> Register
+        </a>
+    </div>
+}

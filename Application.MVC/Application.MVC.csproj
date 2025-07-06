@@ -15,12 +15,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Aplication.API.Consumer\Application.API.Consumer.csproj" />
     <ProjectReference Include="..\Aplication.API\Application.API.csproj" />
     <ProjectReference Include="..\Aplication.Modelos\Application.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Storage\music\" />
   </ItemGroup>
 
 </Project>

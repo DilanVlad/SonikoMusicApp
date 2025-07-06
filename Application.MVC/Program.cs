@@ -1,8 +1,11 @@
 using Aplication.API.Consumer;
 using Application.Models;
 using Application.Models.Identity;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using System;
 
 namespace Application.MVC
@@ -11,6 +14,10 @@ namespace Application.MVC
     {
         public static void Main(string[] args)
         {
+            //endpoint de Music API
+            Crud<Application.Models.Music>.EndPoint = "https://localhost:7095/api/Musics";
+
+
             var builder = WebApplication.CreateBuilder(args);
 
             var connectionString = builder.Configuration.GetConnectionString("SqlConnection")
@@ -33,13 +40,25 @@ namespace Application.MVC
             .AddRoles<Role>()
             .AddEntityFrameworkStores<AppDbContext>();
 
-            //endpoint de Music API
-            Crud<Application.Models.Music>.EndPoint = "https://localhost:7095/api/Musics";
 
 
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+
+            builder.Services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 100_000_000; // 100MB
+                options.ValueLengthLimit = int.MaxValue;
+                options.ValueCountLimit = int.MaxValue;
+            });
+
+            builder.Services.Configure<KestrelServerOptions>(options =>
+            {
+                options.Limits.MaxRequestBodySize = 100_000_000; // 100MB
+            });
+
 
             var app = builder.Build();
 
@@ -55,6 +74,14 @@ namespace Application.MVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Storage")),
+                RequestPath = "/files"
+            });
+
             app.UseRouting();
 
             app.UseAuthentication();

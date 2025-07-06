@@ -6,3 +6,38 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <p>¡Hola usuario logueado!</p>
+    <a href="/Dashboard">Mi Dashboard</a>
+}
+else
+{
+    <p>Por favor inicia sesión</p>
+    <a href="/Account/Login">Iniciar Sesión</a>
+}
+
+@if (User.IsInRole("admins"))
+{
+    <div class="admin-panel">
+        <h3>Panel de Administración</h3>
+        <a href="/Admin/Users">Gestionar Usuarios</a>
+    </div>
+}
+
+@if (User.IsInRole("artists"))
+{
+    <div class="artist-panel">
+        <h3>Panel de Artista</h3>
+        <a href="/Artist/UploadMusic">Subir Música</a>
+    </div>
+}
+
+@if (User.IsInRole("users"))
+{
+    <div class="user-panel">
+        <h3>Mi Biblioteca</h3>
+        <a href="/Music/MyPlaylists">Mis Playlists</a>
+    </div>
+}

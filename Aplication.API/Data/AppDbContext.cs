@@ -13,5 +13,5 @@ using System.Threading.Tasks;
         {
         }
 
-        public DbSet<Application.Models.Identity.Music> Musics { get; set; } = default!;
+        public DbSet<Application.Models.Music> Musics { get; set; } = default!;
     }

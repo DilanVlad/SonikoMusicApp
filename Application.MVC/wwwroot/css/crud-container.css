@@ -1,0 +1,451 @@
+/* CRUD Container Styles - Para Index, Create, Edit, Details, Delete */
+
+/* ========== INDEX STYLES ========== */
+.crud-index-container {
+    padding: 20px;
+}
+
+.crud-index-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.crud-index-title {
+    font-size: 2rem;
+    color: #343a40;
+    margin: 0;
+}
+
+.crud-index-subtitle {
+    color: #6c757d;
+    margin: 5px 0 0 0;
+    font-size: 1rem;
+}
+
+.crud-create-btn {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+}
+
+    .crud-create-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+.crud-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: none;
+}
+
+    .crud-table thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .crud-table th {
+        padding: 15px 12px;
+        font-weight: 600;
+        border: none;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    .crud-table td {
+        padding: 12px;
+        border: none;
+        border-bottom: 1px solid #f8f9fa;
+        vertical-align: middle;
+    }
+
+    .crud-table tbody tr:hover {
+        background-color: #f8f9fa;
+        transition: background-color 0.2s ease;
+    }
+
+.crud-actions a {
+    margin-right: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.crud-actions .edit-link {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.crud-actions .details-link {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.crud-actions .delete-link {
+    background-color: #dc3545;
+    color: white;
+}
+
+.crud-actions a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ========== FORM STYLES (Create/Edit) ========== */
+.crud-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.crud-form-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.crud-form-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+    .crud-form-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+.crud-form-body {
+    padding: 30px;
+}
+
+.crud-form-group {
+    margin-bottom: 20px;
+}
+
+.crud-form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #495057;
+    display: block;
+}
+
+.crud-form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .crud-form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        outline: none;
+    }
+
+.crud-form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.crud-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.crud-btn-primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .crud-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+    }
+
+.crud-btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .crud-btn-secondary:hover {
+        background-color: #5a6268;
+        color: white;
+        text-decoration: none;
+    }
+
+/* ========== DETAILS STYLES ========== */
+.crud-details-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.crud-details-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.crud-details-header {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+    .crud-details-header h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+.crud-details-subtitle {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.crud-details-body {
+    padding: 30px;
+}
+
+.crud-details-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+    .crud-details-item:last-child {
+        border-bottom: none;
+    }
+
+.crud-details-label {
+    font-weight: 600;
+    color: #495057;
+    flex: 0 0 30%;
+    padding-right: 15px;
+}
+
+.crud-details-value {
+    flex: 1;
+    color: #212529;
+    word-break: break-word;
+}
+
+.crud-details-icon {
+    margin-right: 8px;
+    color: #17a2b8;
+}
+
+.crud-details-actions {
+    padding: 20px 30px;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.crud-btn-info {
+    background-color: #17a2b8;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .crud-btn-info:hover {
+        background-color: #138496;
+        color: white;
+        text-decoration: none;
+    }
+
+.crud-btn-warning {
+    background-color: #ffc107;
+    border: none;
+    color: #212529;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+    .crud-btn-warning:hover {
+        background-color: #e0a800;
+        text-decoration: none;
+    }
+
+/* ========== DELETE STYLES ========== */
+.crud-delete-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.crud-delete-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border-left: 5px solid #dc3545;
+}
+
+.crud-delete-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    padding: 25px;
+    text-align: center;
+}
+
+    .crud-delete-header h3 {
+        margin: 0 0 10px 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+.crud-delete-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px;
+    color: #856404;
+}
+
+    .crud-delete-warning strong {
+        color: #dc3545;
+    }
+
+.crud-delete-summary {
+    padding: 20px 30px;
+    background-color: #f8f9fa;
+}
+
+.crud-delete-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+    .crud-delete-item:last-child {
+        border-bottom: none;
+    }
+
+.crud-delete-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.crud-delete-value {
+    color: #212529;
+    max-width: 60%;
+    text-align: right;
+}
+
+.crud-delete-actions {
+    padding: 25px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+}
+
+.crud-btn-danger {
+    background: linear-gradient(45deg, #dc3545, #c82333);
+    border: none;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+    .crud-btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(220, 53, 69, 0.4);
+    }
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .crud-form-container,
+    .crud-details-container,
+    .crud-delete-container {
+        padding: 10px;
+    }
+
+    .crud-form-body,
+    .crud-details-body,
+    .crud-delete-summary {
+        padding: 20px;
+    }
+
+    .crud-details-item,
+    .crud-delete-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .crud-details-label,
+    .crud-delete-label {
+        flex: none;
+    }
+
+    .crud-details-value,
+    .crud-delete-value {
+        max-width: 100%;
+        text-align: left;
+    }
+
+    .crud-form-actions,
+    .crud-details-actions,
+    .crud-delete-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+}

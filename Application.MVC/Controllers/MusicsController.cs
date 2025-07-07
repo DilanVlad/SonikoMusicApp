@@ -1,13 +1,14 @@
-﻿using TagLib;
-using Aplication.API.Consumer;
+﻿using Aplication.API.Consumer;
 using Application.Models;
 using Application.Models.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Timeouts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using TagLib;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.MVC.Controllers
@@ -15,10 +16,24 @@ namespace Application.MVC.Controllers
     public class MusicsController : Controller
     {
         // GET: MusicsController
+       [Authorize(Roles = "admins,artists")]
         public ActionResult Index()
         {
-            var data = Crud<Music>.GetAll();
-            return View(data);
+            if (User.IsInRole("artists"))
+            {
+                // Artista: solo sus músicas
+                var currentUserId = GetCurrentUserId();
+                var data = Crud<Music>.GetBy("artist", currentUserId);
+                ViewBag.IsPersonalDashboard = true;
+                return View(data);
+            }
+            else
+            {
+                // Admin: todas las músicas
+                var data = Crud<Music>.GetAll();
+                ViewBag.IsPersonalDashboard = false;
+                return View(data);
+            }
         }
 
         // GET: MusicsController/Details/5
@@ -29,6 +44,7 @@ namespace Application.MVC.Controllers
         }
 
         // GET: MusicsController/Create
+        [Authorize(Roles = "artists")]
         public ActionResult Create()
         {
             ViewBag.Genres = GetGenresList();
@@ -47,10 +63,12 @@ namespace Application.MVC.Controllers
         }
 
         // POST: MusicsController/Create
+        [Authorize(Roles = "artists")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [RequestSizeLimit(50 * 1024 * 1024)] // 50MB
         [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
+
         public ActionResult Create(Music data, IFormFile MusicFile)
         {
             try
@@ -93,6 +111,7 @@ namespace Application.MVC.Controllers
 
 
         // GET: MusicsController/Edit/5
+        [Authorize(Roles = "artists")]
         public ActionResult Edit(int id)
         {
             var data = Crud<Music>.GetById(id);
@@ -101,13 +120,33 @@ namespace Application.MVC.Controllers
         }
 
         // POST: MusicsController/Edit/5
+        [Authorize(Roles = "artists")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Music data)
+        [RequestSizeLimit(50 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
+        public ActionResult Edit(int id, Music data, IFormFile MusicFile)
         {
             try
             {
+                
+                if (MusicFile != null && MusicFile.Length > 0)
+                {
+                    
+                    var currentMusic = Crud<Music>.GetById(id);
+
+                    if (currentMusic != null && !string.IsNullOrEmpty(currentMusic.FilePath)) // Delete if exist
+                    {
+                        DeleteMusicFile(currentMusic.FilePath);
+                    }
+
+                    
+                    data.FilePath = SaveMusicFile(MusicFile, data.ArtistId); // Save
+                    data.Duration = GetAudioDuration(data.FilePath) ?? data.Duration ?? "";
+                }
+
                 Crud<Music>.Update(id, data);
+                TempData["Success"] = "Música actualizada exitosamente";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -118,7 +157,25 @@ namespace Application.MVC.Controllers
             }
         }
 
+        private void DeleteMusicFile(string filePath)
+        {
+            try
+            {
+                var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "Storage", filePath);
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                System.Diagnostics.Debug.WriteLine($"Error eliminando archivo: {ex.Message}");
+            }
+        }
+
         // GET: MusicsController/Delete/5
+        [Authorize(Roles = "admins,artists")]
         public ActionResult Delete(int id)
         {
             var data = Crud<Music>.GetById(id);
@@ -128,6 +185,7 @@ namespace Application.MVC.Controllers
         // POST: MusicsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admins,artists")]
         public ActionResult Delete(int id, Music data)
         {
             try
@@ -187,7 +245,35 @@ namespace Application.MVC.Controllers
         }
 
 
+        [Authorize(Roles = "admins,artists,users")]
+        public ActionResult Search(string query)
+        {
+            // All Musics
+            if (string.IsNullOrEmpty(query))
+            {
+                var allMusics = Crud<Music>.GetAll();
+                ViewBag.SearchQuery = "";
+                ViewBag.ResultCount = allMusics.Count;
+                ViewBag.ShowingAll = true; // Para cambiar el mensaje
+                return View("SearchResults", allMusics);
+            }
 
+            var allMusicsFiltered = Crud<Music>.GetAll();
+
+            // Fuzzy search 
+            var filteredMusics = allMusicsFiltered.Where(m =>
+                m.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                (m.Artist?.FirstName + " " + m.Artist?.LastName).Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                m.Artist?.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase) == true ||
+                m.Artist?.LastName.Contains(query, StringComparison.OrdinalIgnoreCase) == true
+            ).ToList();
+
+            ViewBag.SearchQuery = query;
+            ViewBag.ResultCount = filteredMusics.Count;
+            ViewBag.ShowingAll = false;
+
+            return View("SearchResults", filteredMusics);
+        }
 
     }
 }

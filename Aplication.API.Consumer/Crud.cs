@@ -44,7 +44,7 @@ namespace Aplication.API.Consumer
                 }
             }
         }
-        // Para strings (búsquedas, nombres, etc.)
+        
         public static List<T> GetBy(string campo, string valor)
         {
             using (var client = new HttpClient())

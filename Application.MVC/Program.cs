@@ -40,7 +40,11 @@ namespace Application.MVC
             .AddRoles<Role>()
             .AddEntityFrameworkStores<AppDbContext>();
 
-
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";       
+            });
 
 
             // Add services to the container.
@@ -75,6 +79,14 @@ namespace Application.MVC
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            //
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Storage")),
+                RequestPath = "/files"
+            });
+
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
@@ -84,6 +96,7 @@ namespace Application.MVC
 
             app.UseRouting();
 
+            //
             app.UseAuthentication();
             app.UseAuthorization();
 

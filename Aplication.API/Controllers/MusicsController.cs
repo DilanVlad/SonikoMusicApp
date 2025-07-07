@@ -43,6 +43,18 @@ namespace Application.API.Controllers
             return music;
         }
 
+        // GET: api/MusicsByArtist/5
+        [HttpGet("artist/{artistId}")]
+        public async Task<ActionResult<IEnumerable<Music>>> GetMusicsByArtist(int artistId)
+        {
+            var musics = await _context.Musics
+                .Where(m => m.ArtistId == artistId)
+                .Include(m => m.Artist)
+                .ToListAsync();
+
+            return Ok(musics);
+        }
+
         // PUT: api/Musics/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -104,6 +116,29 @@ namespace Application.API.Controllers
         private bool MusicExists(int id)
         {
             return _context.Musics.Any(e => e.Id == id);
+        }
+
+
+        
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Music>>> SearchMusics(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return BadRequest("Query cannot be empty");
+            }
+
+            var musics = await _context.Musics
+                .Include(m => m.Artist)
+                .Where(m =>
+                    m.Title.Contains(query) ||
+                    (m.Artist.FirstName + " " + m.Artist.LastName).Contains(query) ||
+                    m.Artist.FirstName.Contains(query) ||
+                    m.Artist.LastName.Contains(query)
+                )
+                .ToListAsync();
+
+            return Ok(musics);
         }
     }
 }

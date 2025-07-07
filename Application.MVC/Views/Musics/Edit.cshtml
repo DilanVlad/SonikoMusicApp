@@ -26,7 +26,7 @@
                         </div>
                     }
 
-                    <form asp-action="Edit" method="post">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <!-- Campo oculto para ID -->
@@ -67,11 +67,30 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
+                                <label for="MusicFile" class="form-label">
+                                    <i class="fas fa-file-audio"></i> Cambiar archivo de música (opcional)
+                                </label>
+                                <input type="file" name="MusicFile" class="form-control"
+                                       accept=".mp3,.wav,.flac,.m4a,.ogg" />
+                                <div class="form-text">Si seleccionas un archivo, reemplazará el actual. Máximo 50MB.</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label">
                                     <i class="fas fa-calendar"></i> Fecha de subida
                                 </label>
                                 <input value="@Model.UploadDate.ToString("dd/MM/yyyy HH:mm")" class="form-control" readonly />
                                 <div class="form-text">Solo lectura - no se puede modificar</div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-file-audio"></i> Archivo actual
+                                </label>
+                                <input value="@Model.FilePath" class="form-control" readonly />
+                                <div class="form-text">Se actualizará si cambias el archivo</div>
                             </div>
                         </div>
 
@@ -84,17 +103,15 @@
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
 
-                        <!-- Información del archivo actual -->
-                        <div class="alert alert-info">
-                            <h6><i class="fas fa-file-audio"></i> Archivo actual:</h6>
-                            <p class="mb-0">
-                                <strong>Ruta:</strong> @Model.FilePath<br>
-                                <strong>Artista ID:</strong> @Model.ArtistId<br>
-                                <small class="text-muted">
-                                    <i class="fas fa-info-circle"></i>
-                                    Para cambiar el archivo de audio, tendrás que crear una nueva música.
-                                </small>
-                            </p>
+                        <!-- Vista previa del cambio -->
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-info-circle"></i> Información sobre cambio de archivo:</h6>
+                            <ul class="mb-0">
+                                <li>Si seleccionas un nuevo archivo, <strong>reemplazará completamente</strong> el actual</li>
+                                <li>El archivo anterior se <strong>eliminará permanentemente</strong></li>
+                                <li>La duración se <strong>recalculará automáticamente</strong></li>
+                                <li>Si no seleccionas archivo, el actual se <strong>mantendrá sin cambios</strong></li>
+                            </ul>
                         </div>
 
                         <!-- Botones -->

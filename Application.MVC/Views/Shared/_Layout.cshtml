@@ -6,77 +6,11 @@
     <title>@ViewData["Title"] - Application.MVC</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Application.MVC.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            height: 60px;
-        }
-
-        aside {
-            position: fixed;
-            top: 60px;
-            left: 0;
-            width: 200px;
-            height: calc(100vh - 60px);
-            background-color: #f8f9fa;
-            padding: 20px 0;
-            border-right: 1px solid #dee2e6;
-            overflow-y: auto;
-        }
-
-        .main-wrapper {
-            margin-left: 200px;
-            margin-top: 60px;
-            min-height: calc(100vh - 60px);
-            display: flex;
-            flex-direction: column;
-        }
-
-            .main-wrapper > .container-fluid {
-                flex: 1;
-                padding: 0 15px;
-            }
-
-        footer {
-            margin-top: auto;
-            padding: 10px 15px;
-        }
-
-        .search-bar {
-            display: flex;
-            align-items: center;
-        }
-
-            .search-bar input {
-                border: 1px solid #ddd;
-                padding: 5px 10px;
-                border-radius: 20px 0 0 20px;
-                width: 300px;
-            }
-
-            .search-bar button {
-                background: #007bff;
-                color: white;
-                border: none;
-                padding: 6px 15px;
-                border-radius: 0 20px 20px 0;
-                cursor: pointer;
-            }
-    </style>
+    
 </head>
 
 <body>
@@ -90,7 +24,7 @@
 
                 <!-- Search Bar -->
                 <div class="d-flex flex-grow-1 mx-3">
-                    <form asp-controller="Music" asp-action="Search" method="get" class="search-bar">
+                    <form asp-controller="Musics" asp-action="Search" method="get" class="search-bar">
                         <input type="text" name="query" placeholder="Buscar música, artistas..." />
                         <button type="submit">
                             <i class="fas fa-search"></i> BUSCAR
@@ -167,5 +101,167 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+    <!-- Agregar ANTES de </body> -->
+    <!-- Reproductor de música fijo -->
+    <div id="musicPlayer" class="music-player" style="display: none;">
+        <div class="player-content">
+            <div class="song-info">
+                <span id="currentSong">Ninguna canción seleccionada</span>
+            </div>
+            <div class="player-controls">
+                <button id="playPauseBtn" onclick="togglePlayPause()">▶️</button>
+                <button onclick="stopMusic()">⏹️</button>
+            </div>
+            <div class="progress-container">
+                <input type="range" id="progressBar" min="0" max="100" value="0" onchange="seekTo()">
+                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+            </div>
+        </div>
+        <audio id="audioPlayer" ontimeupdate="updateProgress()" onended="onSongEnd()"></audio>
+    </div>
+
+    <style>
+        .music-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #343a40;
+            color: white;
+            padding: 10px;
+            z-index: 1000;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .player-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .song-info {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .player-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+            .player-controls button {
+                background: none;
+                border: none;
+                color: white;
+                font-size: 18px;
+                cursor: pointer;
+                padding: 5px 10px;
+                border-radius: 3px;
+            }
+
+                .player-controls button:hover {
+                    background: rgba(255,255,255,0.1);
+                }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        #progressBar {
+            flex: 1;
+        }
+    </style>
+
+    <script>
+        let currentAudio = null;
+        let isPlaying = false;
+
+        function playMusic(id, titulo, artista, audioUrl) {
+            const player = document.getElementById('musicPlayer');
+            const audioPlayer = document.getElementById('audioPlayer');
+            const songInfo = document.getElementById('currentSong');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+
+            player.style.display = 'block';
+            songInfo.textContent = `${titulo} - ${artista}`;
+            audioPlayer.src = audioUrl;
+            audioPlayer.load();
+            audioPlayer.play();
+            isPlaying = true;
+            playPauseBtn.textContent = '⏸️';
+        }
+
+        function togglePlayPause() {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+
+            if (isPlaying) {
+                audioPlayer.pause();
+                playPauseBtn.textContent = '▶️';
+                isPlaying = false;
+            } else {
+                audioPlayer.play();
+                playPauseBtn.textContent = '⏸️';
+                isPlaying = true;
+            }
+        }
+
+        function stopMusic() {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const playPauseBtn = document.getElementById('playPauseBtn');
+
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            playPauseBtn.textContent = '▶️';
+            isPlaying = false;
+        }
+
+        function updateProgress() {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const progressBar = document.getElementById('progressBar');
+            const currentTime = document.getElementById('currentTime');
+            const duration = document.getElementById('duration');
+
+            if (audioPlayer.duration) {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                progressBar.value = progress;
+
+                currentTime.textContent = formatTime(audioPlayer.currentTime);
+                duration.textContent = formatTime(audioPlayer.duration);
+            }
+        }
+
+        function seekTo() {
+            const audioPlayer = document.getElementById('audioPlayer');
+            const progressBar = document.getElementById('progressBar');
+
+            if (audioPlayer.duration) {
+                const seekTime = (progressBar.value / 100) * audioPlayer.duration;
+                audioPlayer.currentTime = seekTime;
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function onSongEnd() {
+            const playPauseBtn = document.getElementById('playPauseBtn');
+            playPauseBtn.textContent = '▶️';
+            isPlaying = false;
+        }
+    </script>
+
+
 </body>
 </html>

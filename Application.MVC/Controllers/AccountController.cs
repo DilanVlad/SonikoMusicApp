@@ -1,5 +1,6 @@
-﻿using Application.Models.Identity;
-using Application.MVC.Models;
+﻿using Application.MVC.Models;
+using Application.Models.Identity;
+using Application.MVC.Models.ModifyAccount;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -117,7 +118,7 @@ namespace Application.MVC.Controllers
             return View(model);
         }
 
-        // Método helper para redirección
+        // Redirección
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
@@ -129,5 +130,122 @@ namespace Application.MVC.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
+        // MODIFICAR CUENTA
+
+        // GET: Account/Profile
+        public async Task<IActionResult> Profile()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var model = new ProfileViewModel
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                CurrentEmail = user.Email // Para mostrar email actual (no editable)
+            };
+
+            return View(model);
+        }
+
+        // POST: Account/Profile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(ProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            // Actualizar datos
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Perfil actualizado exitosamente";
+                return RedirectToAction("Profile");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        // Agregar estos métodos al AccountController
+
+        // GET: Account/ChangePassword
+        public IActionResult ChangePassword()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
+            return View();
+        }
+
+        // MODIFICAR CONTRASEÑA
+        // POST: Account/ChangePassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Contraseña cambiada exitosamente";
+                return RedirectToAction("Profile");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+
     }
 }

@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Password\" />
     <Folder Include="Storage\music\" />
   </ItemGroup>
 

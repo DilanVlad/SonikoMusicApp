@@ -26,6 +26,8 @@ namespace Application.API.Controllers
         {
             return await _context.Musics
                 .Include(m=> m.Artist)
+                .Include(m=> m.Album)
+                .Include(m=> m.PlaylistMusics)
                 .ToListAsync();
         }
 

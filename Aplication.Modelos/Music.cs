@@ -18,9 +18,13 @@ namespace Application.Models
         public string FilePath { get; set; }
 
 
-        // Relation with User (Artist)
-        public int ArtistId { get; set; }
+        
+        public int ArtistId { get; set; } // Arist
+        public int? AlbumId { get; set; } //Album
+
         public User? Artist { get; set; }
+        public Album? Album { get; set; }
+        public List<PlaylistMusic>? PlaylistMusics { get; set; }
 
         // enums of Genres
         public enum MusicalGenre

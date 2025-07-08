@@ -15,6 +15,8 @@ namespace Application.Models.Identity
 
         // Artist 
         public List<Music>? Musics { get; set; }
+        public List<Album>? Albums { get; set; }
+        public List<Playlist>? Playlists { get; set; }
 
 
     }

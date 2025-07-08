@@ -12,7 +12,7 @@ namespace Application.MVC.Services
     {
         private readonly IConfiguration _config;
 
-        public EmailService(IConfiguration config)
+        public EmailService(IConfiguration config) 
         {
             _config = config;
         }

@@ -1,5 +1,7 @@
-﻿using Application.MVC.Models;
-using Application.Models.Identity;
+﻿using Application.Models.Identity;
+using Application.MVC.Services;
+using Application.MVC.Models;
+using Application.MVC.Models.Email;
 using Application.MVC.Models.ModifyAccount;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +14,16 @@ namespace Application.MVC.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly IEmailService _emailService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _emailService = emailService;
         }
+
 
         // GET: Account/Register
         public IActionResult Register()
@@ -151,7 +156,7 @@ namespace Application.MVC.Controllers
 
             var model = new ProfileViewModel
             {
-                Email = user.Email,
+                
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 CurrentEmail = user.Email // Para mostrar email actual (no editable)
@@ -198,7 +203,8 @@ namespace Application.MVC.Controllers
             return View(model);
         }
 
-        // Agregar estos métodos al AccountController
+        
+        // MODIFICAR CONTRASEÑA
 
         // GET: Account/ChangePassword
         public IActionResult ChangePassword()
@@ -211,7 +217,6 @@ namespace Application.MVC.Controllers
             return View();
         }
 
-        // MODIFICAR CONTRASEÑA
         // POST: Account/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -236,6 +241,102 @@ namespace Application.MVC.Controllers
             {
                 TempData["Success"] = "Contraseña cambiada exitosamente";
                 return RedirectToAction("Profile");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+
+        // RECUPERACIÓN DE CONTRASEÑA POR EMAIL <identity>
+
+        // GET: Account/ForgotPassword
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        // POST: Account/ForgotPassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            //mensaje de éxito
+            ViewBag.Message = "Si el email existe, recibirás un enlace de recuperación.";
+
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var resetUrl = Url.Action("ResetPassword", "Account",
+                    new { token = token, email = user.Email }, Request.Scheme);
+
+                var emailBody = $@"
+                                <h2>Recuperación de Contraseña - SonikoMusic</h2>
+                                <p>Hola {user.FirstName},</p>
+                                <p>Recibimos una solicitud para restablecer tu contraseña.</p>
+                                <p><a href='{resetUrl}' style='background:#007bff;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;'>Restablecer Contraseña</a></p>
+                                <p>Si no solicitaste esto, ignora este email.</p>
+                                <p>El enlace expira en 1 hora.</p>
+                                ";
+
+                await _emailService.SendEmailAsync(user.Email, "Recuperación de Contraseña", emailBody);
+            }
+
+            return View(model);
+        }
+
+        // GET: Account/ResetPassword
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            {
+                TempData["Error"] = "Enlace de recuperación inválido.";
+                return RedirectToAction("Login");
+            }
+
+            var model = new ResetPasswordViewModel
+            {
+                Token = token,
+                Email = email
+            };
+
+            return View(model);
+        }
+
+        // POST: Account/ResetPassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                TempData["Error"] = "Usuario no encontrado.";
+                return RedirectToAction("Login");
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword); 
+
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Contraseña restablecida exitosamente. Ya puedes iniciar sesión.";
+                return RedirectToAction("Login");
             }
 
             foreach (var error in result.Errors)

@@ -47,6 +47,10 @@ namespace Application.MVC
             });
 
 
+            
+            
+            builder.Services.AddScoped<Application.MVC.Services.IEmailService, Application.MVC.Services.EmailService>();
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -87,12 +91,7 @@ namespace Application.MVC
                 RequestPath = "/files"
             });
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Storage")),
-                RequestPath = "/files"
-            });
+            
 
             app.UseRouting();
 

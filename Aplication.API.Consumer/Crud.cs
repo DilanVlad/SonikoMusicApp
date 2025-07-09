@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Aplication.API.Consumer
+namespace Application.API.Consumer
 {
-    public static class Crud<T>
+    public static class Crud<T> 
     {
         public static string EndPoint { get; set; }
 
@@ -45,22 +45,6 @@ namespace Aplication.API.Consumer
             }
         }
         
-        public static List<T> GetBy(string campo, string valor)
-        {
-            using (var client = new HttpClient())
-            {
-                var response = client.GetAsync($"{EndPoint}/{campo}/{valor}").Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    var json = response.Content.ReadAsStringAsync().Result;
-                    return JsonConvert.DeserializeObject<List<T>>(json);
-                }
-                else
-                {
-                    throw new Exception($"Error: {response.StatusCode}");
-                }
-            }
-        }
         public static List<T> GetBy(string campo, int id)
         {
             using (var client = new HttpClient())

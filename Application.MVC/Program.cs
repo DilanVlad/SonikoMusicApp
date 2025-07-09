@@ -1,4 +1,4 @@
-using Aplication.API.Consumer;
+using Application.API.Consumer;
 using Application.Models;
 using Application.Models.Identity;
 using Microsoft.AspNetCore.Http.Features;
@@ -16,6 +16,8 @@ namespace Application.MVC
         {
             //endpoint de Music API
             Crud<Application.Models.Music>.EndPoint = "https://localhost:7095/api/Musics";
+            Crud<Application.Models.Album>.EndPoint = "https://localhost:7095/api/Albums"; 
+            Crud<Application.Models.Playlist>.EndPoint = "https://localhost:7095/api/Playlists";
 
 
             var builder = WebApplication.CreateBuilder(args);

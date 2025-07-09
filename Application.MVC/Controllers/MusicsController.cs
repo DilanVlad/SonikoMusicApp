@@ -1,4 +1,4 @@
-﻿using Aplication.API.Consumer;
+﻿using Application.API.Consumer;
 using Application.Models;
 using Application.Models.Identity;
 using Microsoft.AspNetCore.Authorization;

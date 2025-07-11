@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Application.Models.Music>
+
 @{
     ViewData["Title"] = "Resultados de búsqueda";
 
@@ -49,7 +50,7 @@
                 <div class="music-list compact">
                     @foreach (var music in musicsByArtist.Take(3))
                     {
-                        <div class="music-item" onclick="playMusic(@music.Id, '@music.Title', '@music.Artist?.FirstName @music.Artist?.LastName', '/files/@music.FilePath')">
+                        <div class="music-item">
                             <div class="music-info">
                                 <div class="music-cover artist-cover">
                                     <i class="fas fa-user"></i>
@@ -101,7 +102,7 @@
                 <div class="music-list">
                     @foreach (var music in musicsByTitle)
                     {
-                        <div class="music-item" onclick="playMusic(@music.Id, '@music.Title', '@music.Artist?.FirstName @music.Artist?.LastName', '/files/@music.FilePath')">
+                        <div class="music-item">
                             <div class="music-info">
                                 <div class="music-cover">
                                     <i class="fas fa-music"></i>
@@ -122,7 +123,7 @@
                             </div>
                             <div class="music-actions">
                                 <button class="play-btn"
-                                        onclick="playMusic(@music.Id, '@music.Title', '@music.Artist?.FirstName @music.Artist?.LastName', '/files/@music.FilePath'); event.stopPropagation();">
+                                        onclick="playMusic(@music.Id, '@music.Title', '@music.Artist?.FirstName @music.Artist?.LastName', '/files/@music.FilePath', event);">
                                     <i class="fas fa-play"></i>
                                 </button>
 
@@ -131,14 +132,20 @@
                                     <button class="playlist-btn" onclick="event.stopPropagation(); showAddToPlaylistModal(@music.Id, '@music.Title');" title="Agregar a Playlist">
                                         <i class="fas fa-plus"></i>
                                     </button>
-                                    
+
                                     @if (User.IsInRole("users") || User.IsInRole("admins"))
                                     {
-                                        <button class="btn btn-success btn-sm download-music" data-music-id="@music.Id">
-                                            <i class="fas fa-download"></i> Descargar
-                                        </button>
+
+                                        
+                                        <form asp-controller="Downloads" asp-action="DownloadMusic" method="post" style="display: inline;">
+                                            <input type="hidden" name="musicId" value="@music.Id" />
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-download"></i> Añadir Descarga
+                                            </button>
+                                        </form>
+
+
                                     }
-                                    
                                 }
                             </div>
                         </div>

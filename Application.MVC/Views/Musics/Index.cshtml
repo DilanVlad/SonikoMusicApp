@@ -1,77 +1,114 @@
 ﻿@model IEnumerable<Application.Models.Music>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Duration)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Genre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UploadDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FilePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArtistId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AlbumId)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Duration)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Genre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UploadDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FilePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ArtistId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AlbumId)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) | 
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
+@{
+    ViewData["Title"] = "Gestión de Música";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-    </tbody>
-</table>
+
+<link rel="stylesheet" href="~/css/gestion-music.css" />
+
+<div class="gestion-music-container">
+    <div class="gestion-header">
+        <h1><i class="fas fa-music"></i> Gestión de Música</h1>
+        <a asp-action="Create" class="btn-create">
+            <i class="fas fa-plus"></i> Subir Nueva Música
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="music-table-container">
+            <table class="music-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Duración</th>
+                        <th>Género</th>
+                        <th>Fecha Subida</th>
+                        <th>Descripción</th>
+                        <th>Archivo</th>
+                        <th>Artista</th>
+                        <th>Álbum</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td class="music-title">@item.Title</td>
+                            <td>
+                                <i class="fas fa-clock"></i> @(item.Duration ?? "N/A")
+                            </td>
+                            <td>
+                                <span class="music-genre">@item.Genre</span>
+                            </td>
+                            <td class="music-date">
+                                @item.UploadDate.ToString("dd/MM/yyyy")
+                            </td>
+                            <td title="@item.Description">
+                                @(string.IsNullOrEmpty(item.Description) ? "Sin descripción" :
+                                                        (item.Description.Length > 30 ? item.Description.Substring(0, 30) + "..." : item.Description))
+                    </td>
+                    <td title="@item.FilePath">
+                        <i class="fas fa-file-audio"></i>
+                        @(item.FilePath?.Split('/').LastOrDefault() ?? "N/A")
+                    </td>
+                    <td>
+                        @if (item.Artist != null)
+                                {
+                                    <span>@item.Artist.FirstName @item.Artist.LastName</span>
+                                }
+                                else
+                                {
+                                    <span>ID: @item.ArtistId</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Album != null)
+                                {
+                                    <span>@item.Album.Name</span>
+                                }
+                                else if (item.AlbumId.HasValue)
+                                {
+                                    <span>ID: @item.AlbumId</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin álbum</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="music-actions">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn-details">
+                                        <i class="fas fa-info-circle"></i> Ver
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="music-table-container">
+            <div class="empty-state">
+                <i class="fas fa-music"></i>
+                <h3>No hay música subida</h3>
+                <p>Comienza subiendo tu primera canción</p>
+                <a asp-action="Create" class="btn-create">
+                    <i class="fas fa-plus"></i> Subir Primera Música
+                </a>
+            </div>
+        </div>
+    }
+</div>

@@ -58,7 +58,7 @@ namespace Application.MVC.Controllers
                     // Login automático
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    
+                    TempData.Clear();
                     return RedirectToAction("Index", "Home");
                 }
 
@@ -87,6 +87,7 @@ namespace Application.MVC.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            TempData.Clear();
             return RedirectToAction("Index", "Home");
         }
 
@@ -111,7 +112,7 @@ namespace Application.MVC.Controllers
 
                 if (result.Succeeded)
                 {
-                    
+                    TempData.Clear();
                     return RedirectToLocal(returnUrl);
                 }
                 else

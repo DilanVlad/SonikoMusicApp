@@ -69,7 +69,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Musics" asp-action="SearchResults">
+                        <a class="nav-link" asp-controller="Musics" asp-action="Search">
                             <span class="nav-icon">🔍</span>
                             <span>Explorar</span>
                         </a>
@@ -109,6 +109,28 @@
                         <span>Álbums</span>
                     </a>
                 </li>
+                <!-- Después de "Mis Playlists" -->
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Follows" asp-action="Index">
+                        <i class="fas fa-heart"></i> Siguiendo
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Follows" asp-action="Followers">
+                        <i class="fas fa-users"></i> Seguidores
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Follows" asp-action="Discover">
+                        <i class="fas fa-compass"></i> Descubrir
+                    </a>
+                </li>
+                <!-- En la parte de admin -->
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Follows" asp-action="Index">
+                        <i class="fas fa-users-cog"></i> Gestión Follows
+                    </a>
+                </li>
                 @if (User.IsInRole("users") || User.IsInRole("admins"))
                 {
                     <li class="nav-item">
@@ -126,7 +148,7 @@
 
     <div class="main-wrapper" id="soniko-main">
         <div class="container-fluid">
-            <main role="main" class="pb-3" style="background-color: rgba(195, 195, 195, 0.135)">
+            <main role="main" class="pb-3">
                 @RenderBody()
             </main>
         </div>

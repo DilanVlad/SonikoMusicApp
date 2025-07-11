@@ -1,100 +1,44 @@
 ﻿@model Application.Models.Implementations.Download
 @{
-    ViewData["Title"] = "Detalle de Descarga";
+    ViewData["Title"] = "Detalles de Descarga";
 }
 
 <link rel="stylesheet" href="~/css/downloads.css" />
 
 <div class="downloads-container">
-    <div class="container">
-        <div class="downloads-header">
-            <h1 class="downloads-title">
-                <i class="fas fa-info-circle"></i> Detalle de Descarga
-            </h1>
-        </div>
+    <div class="downloads-header">
+        <h1><i class="fas fa-info-circle"></i> Detalles de Descarga</h1>
+    </div>
 
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="downloads-card">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <strong>Música:</strong>
-                        </div>
-                        <div class="col-md-8">
-                            @(Model.Music?.Title ?? "No disponible")
-                        </div>
-                    </div>
-                    <hr style="border-color: rgba(255,255,255,0.2);">
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <strong>Artista:</strong>
-                        </div>
-                        <div class="col-md-8">
-                            @(Model.Music?.Artist?.FirstName + " " + Model.Music?.Artist?.LastName ?? "No disponible")
-                        </div>
-                    </div>
-                    <hr style="border-color: rgba(255,255,255,0.2);">
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <strong>Usuario:</strong>
-                        </div>
-                        <div class="col-md-8">
-                            @(Model.User?.FirstName + " " + Model.User?.LastName ?? "No disponible")
-                        </div>
-                    </div>
-                    <hr style="border-color: rgba(255,255,255,0.2);">
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <strong>Fecha de Descarga:</strong>
-                        </div>
-                        <div class="col-md-8">
-                            @Model.DownloadDate.ToString("dd/MM/yyyy HH:mm:ss")
-                        </div>
-                    </div>
-                    <hr style="border-color: rgba(255,255,255,0.2);">
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <strong>Estado:</strong>
-                        </div>
-                        <div class="col-md-8">
-                            <span class="download-status status-@Model.Status.ToString().ToLower()">
-                                @Model.Status.ToString()
-                            </span>
-                        </div>
-                    </div>
-
-                    @if (!string.IsNullOrEmpty(Model.LocalFilePath))
-                    {
-                        <hr style="border-color: rgba(255,255,255,0.2);">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <strong>Ruta Local:</strong>
-                            </div>
-                            <div class="col-md-8">
-                                @Model.LocalFilePath
-                            </div>
-                        </div>
-                    }
-
-                    <div class="downloads-actions mt-4">
-                        @if (User.IsInRole("admins"))
-                        {
-                            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn-downloads btn-primary-downloads">
-                                <i class="fas fa-edit"></i> Editar
-                            </a>
-                        }
-                        <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn-downloads btn-danger-downloads">
-                            <i class="fas fa-trash"></i> Eliminar
-                        </a>
-                        <a href="@Url.Action("Index")" class="btn-downloads btn-secondary-downloads">
-                            <i class="fas fa-arrow-left"></i> Volver a Lista
-                        </a>
-                    </div>
-                </div>
+    <div class="downloads-grid" style="max-width: 600px;">
+        <div class="download-card">
+            <div class="download-info">
+                <h3>@Model.Music?.Title</h3>
+                <p><i class="fas fa-user"></i> <strong>Artista:</strong> @Model.Music?.Artist?.FirstName @Model.Music?.Artist?.LastName</p>
+                <p><i class="fas fa-music"></i> <strong>Género:</strong> @Model.Music?.Genre</p>
+                <p><i class="fas fa-clock"></i> <strong>Duración:</strong> @Model.Music?.Duration</p>
+                <p><i class="fas fa-calendar"></i> <strong>Fecha de descarga:</strong> @Model.DownloadDate.ToString("dd/MM/yyyy HH:mm")</p>
+                <p>
+                    <i class="fas fa-info"></i> <strong>Estado:</strong>
+                    <span class="status-badge status-@(Model.Status.ToString().ToLower())">
+                        @Model.Status
+                    </span>
+                </p>
+                @if (!string.IsNullOrEmpty(Model.LocalFilePath))
+                {
+                    <p><i class="fas fa-folder"></i> <strong>Ubicación:</strong> @Model.LocalFilePath</p>
+                }
+            </div>
+            <div class="download-actions">
+                <a href="/files/@Model.Music?.FilePath" download class="btn-download">
+                    <i class="fas fa-download"></i> Descargar Nuevamente
+                </a>
+                <a href="@Url.Action("Index")" class="btn-download">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                <a href="@Url.Action("Delete", new { id = Model.Id })" class="btn-download btn-danger-download">
+                    <i class="fas fa-trash"></i> Eliminar del Historial
+                </a>
             </div>
         </div>
     </div>

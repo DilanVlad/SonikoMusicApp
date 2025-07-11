@@ -1,0 +1,176 @@
+﻿
+.follow-container {
+    background: linear-gradient(135deg, #667eea00 0%, #4b5ba274 100%);
+
+    min-height: 100vh;
+    padding: 20px;
+    color: white;
+}
+
+.follow-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .follow-header h1 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin-bottom: 10px;
+    }
+
+    .follow-header p {
+        opacity: 0.8;
+        font-size: 1.1rem;
+    }
+
+.follow-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.follow-tab {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+    .follow-tab:hover,
+    .follow-tab.active {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+
+.artists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.artist-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+    .artist-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+.artist-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px auto;
+    font-size: 2rem;
+    color: white;
+}
+
+.artist-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.4rem;
+    color: #fff;
+}
+
+.artist-info p {
+    margin: 8px 0;
+    opacity: 0.8;
+    font-size: 0.95rem;
+}
+
+.artist-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 15px 0;
+    padding: 15px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #4ecdc4;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.artist-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-follow {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-follow:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+.btn-unfollow {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+}
+
+.btn-view-music {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.empty-follows {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+    .empty-follows i {
+        font-size: 4rem;
+        opacity: 0.5;
+        margin-bottom: 20px;
+    }
+
+.follow-since {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin-top: 10px;
+}

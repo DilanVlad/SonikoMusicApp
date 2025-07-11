@@ -22,11 +22,13 @@ namespace Application.MVC
             Crud<Application.Models.Playlist>.EndPoint = "https://localhost:7095/api/Playlists";
 
             Crud<Download>.EndPoint = "https://localhost:7095/api/Downloads";
-            Crud<Follow>.EndPoint = "https://localhost:7095/api/Follow";
+            Crud<Follow>.EndPoint = "https://localhost:7095/api/Follows";
             Crud<Notification>.EndPoint = "https://localhost:7095/api/Notifications";
             Crud<SubscriptionPlan>.EndPoint = "https://localhost:7095/api/SubscriptionPlans";
             Crud<UserSubscription>.EndPoint = "https://localhost:7095/api/UserSubscriptions";
 
+            
+            
 
             var builder = WebApplication.CreateBuilder(args);
 

@@ -15,25 +15,20 @@ namespace Application.MVC.Controllers
         // GET: DownloadsController
         public ActionResult Index()
         {
-            if (User.IsInRole("admins"))
-            {
-                // Admin: todas las descargas
-                var data = Crud<Download>.GetAll();
-                return View(data);
-            }
-            else
-            {
-                // Usuario: solo sus descargas
-                var currentUserId = GetCurrentUserId();
-                var data = Crud<Download>.GetBy("user", currentUserId);
-                return View(data);
-            }
+            var currentUserId = GetCurrentUserId();
+            var data = Crud<Download>.GetBy("user", currentUserId);
+            return View(data);
         }
 
         // GET: DownloadsController/Details/5
         public ActionResult Details(int id)
         {
             var data = Crud<Download>.GetById(id);
+
+            if (data.UserId != GetCurrentUserId() && !User.IsInRole("admins"))
+            {
+                return Forbid();
+            }
             return View(data);
         }
 
@@ -51,10 +46,7 @@ namespace Application.MVC.Controllers
         {
             try
             {
-                data.UserId = GetCurrentUserId(); // Asignar usuario actual
-                data.DownloadDate = DateTime.Now;
-                data.Status = Download.DownloadStatus.Completed;
-
+                data.UserId = GetCurrentUserId(); 
                 Crud<Download>.Create(data);
                 return RedirectToAction(nameof(Index));
             }
@@ -93,6 +85,10 @@ namespace Application.MVC.Controllers
         public ActionResult Delete(int id)
         {
             var data = Crud<Download>.GetById(id);
+            if (data.UserId != GetCurrentUserId() && !User.IsInRole("admins"))
+            {
+                return Forbid();
+            }
             return View(data);
         }
 
@@ -104,15 +100,55 @@ namespace Application.MVC.Controllers
             try
             {
                 Crud<Download>.Delete(id);
+                TempData["Success"] = "Descarga eliminada del historial";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
+                TempData["Error"] = ex.Message;
                 return View(data);
             }
 
         }
+
+        [HttpPost]
+        public ActionResult DownloadMusic(int musicId)
+        {
+            try
+            {
+                var currentUserId = GetCurrentUserId();
+
+                // Verificar si ya descargó esta música
+                var existingDownloads = Crud<Download>.GetBy("user", currentUserId);
+                if (existingDownloads.Any(d => d.MusicId == musicId))
+                {
+                    TempData["Warning"] = "Ya has descargado esta canción anteriormente";
+                    return RedirectToAction("Search", "Musics");
+                }
+
+                // Crear registro de descarga
+                var download = new Download
+                {
+                    UserId = currentUserId,
+                    MusicId = musicId,
+                    DownloadDate = DateTime.Now,
+                    Status = Download.DownloadStatus.Completed
+                };
+
+                Crud<Download>.Create(download);
+                TempData["Success"] = "Música descargada exitosamente";
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error al descargar: " + ex.Message;
+                return RedirectToAction("Search", "Musics");
+            }
+        }
+
+
+
 
         private int GetCurrentUserId()
         {
@@ -125,6 +161,9 @@ namespace Application.MVC.Controllers
             }
             return 0;
         }
+
+
+
 
     }
 }

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Application.Models.Implementations.Follow>
+@{
+    ViewData["Title"] = ViewBag.CurrentSection == "followers" ? "Mis Seguidores" : "Artistas Seguidos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/follow.css" />
+
+<div class="follow-container">
+    <div class="follow-header">
+        <h1>
+            <i class="fas fa-users"></i>
+            @if (ViewBag.IsAdmin == true)
+            {
+                @(ViewBag.CurrentSection == "followers" ? "Todas las Relaciones" : "Gestión de Follows")
+            }
+            else
+            {
+                @(ViewBag.CurrentSection == "followers" ? "Mis Seguidores" : "Siguiendo")
+            }
+        </h1>
+        <p>@(ViewBag.CurrentSection == "followers" ? "Usuarios que te siguen" : "Artistas que sigues")</p>
+    </div>
+
+    <!-- Tabs de navegación -->
+    <div class="follow-tabs">
+        <a href="@Url.Action("Index")" class="follow-tab @(ViewBag.CurrentSection == "following" ? "active" : "")">
+            <i class="fas fa-heart"></i> Siguiendo
+        </a>
+        <a href="@Url.Action("Followers")" class="follow-tab @(ViewBag.CurrentSection == "followers" ? "active" : "")">
+            <i class="fas fa-users"></i> Seguidores
+        </a>
+        <a href="@Url.Action("Discover")" class="follow-tab @(ViewBag.CurrentSection == "discover" ? "active" : "")">
+            <i class="fas fa-compass"></i> Descubrir
+        </a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="artists-grid">
+            @foreach (var follow in Model)
+            {
+                var artist = ViewBag.CurrentSection == "followers" ? follow.Follower : follow.Artist;
+                <div class="artist-card">
+                    <div class="artist-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="artist-info">
+                        <h3>@artist?.FirstName @artist?.LastName</h3>
+                        <p><i class="fas fa-envelope"></i> @artist?.Email</p>
+
+                        @if (ViewBag.IsAdmin == true)
+                        {
+                            <!-- Vista de Admin: mostrar ambos usuarios en la relación -->
+                            <p><i class="fas fa-arrow-right"></i> @follow.Follower?.FirstName sigue a @follow.Artist?.FirstName</p>
+                        }
+
+                        <div class="follow-since">
+                            <i class="fas fa-calendar"></i>
+                            @(ViewBag.CurrentSection == "followers" ? "Te sigue" : "Siguiendo") desde @follow.FollowDate.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+
+                    <div class="artist-actions">
+                        @if (ViewBag.IsAdmin == true)
+                        {
+                            <!-- Admin: solo ver y eliminar -->
+                            <a href="@Url.Action("Delete", new { id = follow.Id })" class="btn-follow btn-unfollow">
+                                <i class="fas fa-trash"></i> Eliminar Relación
+                            </a>
+                        }
+                        else if (ViewBag.CurrentSection != "followers")
+                        {
+                            <!-- Usuario normal: dejar de seguir -->
+                            <form asp-action="UnfollowArtist" method="post" style="display: inline;">
+                                <input type="hidden" name="artistId" value="@follow.ArtistId" />
+                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                <button type="submit" class="btn-follow btn-unfollow" onclick="return confirm('¿Dejar de seguir a este artista?')">
+                                    <i class="fas fa-user-minus"></i> Dejar de seguir
+                                </button>
+                            </form>
+                        }
+
+                        <a href="@Url.Action("Search", "Musics", new { query = artist?.FirstName + " " + artist?.LastName })" class="btn-follow btn-view-music">
+                            <i class="fas fa-music"></i> Ver Música
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-follows">
+            <i class="fas fa-users"></i>
+            <h3>
+                @(ViewBag.CurrentSection == "followers" ? "Aún no tienes seguidores" : "No sigues a ningún artista")
+            </h3>
+            <p>
+                @(ViewBag.CurrentSection == "followers" ? "Comparte tu música para ganar seguidores" : "Descubre nuevos artistas para seguir")
+            </p>
+            @if (ViewBag.CurrentSection != "followers")
+            {
+                <a href="@Url.Action("Discover")" class="btn-follow">
+                    <i class="fas fa-compass"></i> Descubrir Artistas
+                </a>
+            }
+        </div>
+    }
+</div>

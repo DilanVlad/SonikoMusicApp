@@ -131,6 +131,14 @@
                                     <button class="playlist-btn" onclick="event.stopPropagation(); showAddToPlaylistModal(@music.Id, '@music.Title');" title="Agregar a Playlist">
                                         <i class="fas fa-plus"></i>
                                     </button>
+                                    
+                                    @if (User.IsInRole("users") || User.IsInRole("admins"))
+                                    {
+                                        <button class="btn btn-success btn-sm download-music" data-music-id="@music.Id">
+                                            <i class="fas fa-download"></i> Descargar
+                                        </button>
+                                    }
+                                    
                                 }
                             </div>
                         </div>

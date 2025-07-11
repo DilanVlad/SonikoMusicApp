@@ -363,3 +363,11 @@ if (typeof module !== 'undefined' && module.exports) {
         setVolume
     };
 }
+
+('.download-music').click(function () {
+    var musicId = $(this).data('music-id');
+    $.post('@Url.Action("Create", "Downloads")', { MusicId: musicId })
+        .done(function () {
+            toastr.success('Descarga iniciada');
+        });
+});

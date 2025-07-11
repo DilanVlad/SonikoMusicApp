@@ -109,6 +109,14 @@
                         <span>Álbums</span>
                     </a>
                 </li>
+                @if (User.IsInRole("users") || User.IsInRole("admins"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index", "Downloads")">
+                            <i class="fas fa-download"></i> Mis Descargas
+                        </a>
+                    </li>
+                }
             </div>
             </ul>
             </div>

@@ -6,51 +6,73 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="dropdown">
-        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <i class="fas fa-user"></i> @User.Identity.Name
+        <button class="user-dropdown-btn d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+            <div class="user-avatar">
+                @{
+                    var user = await UserManager.GetUserAsync(User);
+                    var avatarText = User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U";
+                    var roles = await UserManager.GetRolesAsync(user);
+                    var userRole = roles.FirstOrDefault();
+                }
+                <span class="avatar-letter">@avatarText</span>
+            </div>
+            <span class="user-name">@User.Identity.Name</span>
+            <i class="fas fa-caret-down"></i>
         </button>
-        <ul class="dropdown-menu">
-            <li>
-                <h6 class="dropdown-header">
-                    @{
-                        var user = await UserManager.GetUserAsync(User);
-                        var roles = await UserManager.GetRolesAsync(user);
-                        var userRole = roles.FirstOrDefault();
-                    }
+        <ul class="dropdown-menu dropdown-menu-end p-2">
+            <li class="dropdown-header d-flex align-items-center gap-2 px-3 py-2">
+                <div class="role-badge @userRole">
                     @switch (userRole)
                     {
                         case "admins":
+                            <i class="fas fa-shield-alt me-1"></i>
+                
                             <span>Administrador</span>
                             break;
                         case "artists":
-
+                            <i class="fas fa-palette me-1"></i>
+                
                             <span>Artista</span>
                             break;
-                        case "users":
-
-                            <span>Usuario</span>
-                            break;
                         default:
-
+                            <i class="fas fa-user me-1"></i>
+                
                             <span>Usuario</span>
                             break;
                     }
-                </h6>
+                </div>
             </li>
-            <li><hr class="dropdown-divider"></li>
-
-            <!-- Modificar cuenta -->
+            <li><hr class="dropdown-divider my-2"></li>
             <li>
-                <a class="dropdown-item" asp-controller="Account" asp-action="Profile">
-                    <i class="fas fa-user-edit"></i> Modificar cuenta
+                <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" asp-controller="Account" asp-action="Profile">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Mi perfil</span>
                 </a>
             </li>
-
-            <li><hr class="dropdown-divider"></li>
+            @if (userRole == "artists")
+            {
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" href="#">
+                        <i class="fas fa-music"></i>
+                        <span>Mis canciones</span>
+                    </a>
+                </li>
+            }
+            @if (userRole == "admins")
+            {
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" href="#">
+                        <i class="fas fa-cog"></i>
+                        <span>Panel admin</span>
+                    </a>
+                </li>
+            }
+            <li><hr class="dropdown-divider my-2"></li>
             <li>
                 <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" class="d-inline">
-                    <button type="submit" class="dropdown-item text-danger">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    <button type="submit" class="dropdown-item d-flex align-items-center gap-2 px-3 py-2 text-danger">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar sesión</span>
                     </button>
                 </form>
             </li>
@@ -59,12 +81,15 @@
 }
 else
 {
-    <div class="btn-group">
-        <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Login">
-            <i class="fas fa-sign-in-alt"></i> Login
+    <div class="auth-buttons d-flex gap-2">
+        <a class="btn login-btn d-flex align-items-center gap-2" asp-controller="Account" asp-action="Login">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Iniciar sesión</span>
         </a>
-        <a class="btn btn-primary" asp-controller="Account" asp-action="Register">
-            <i class="fas fa-user-plus"></i> Register
+        <a class="btn register-btn d-flex align-items-center gap-2" asp-controller="Account" asp-action="Register">
+            <i class="fas fa-user-plus"></i>
+            <span>Registrarse</span>
         </a>
     </div>
 }
+

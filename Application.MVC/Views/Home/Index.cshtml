@@ -1,664 +1,107 @@
 ﻿@{
-    ViewData["Title"] = "Inicio - SonikoMusic";
+    ViewData["Title"] = "Inicio";
 }
 
-<style>
-    .hero-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 4rem 0;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        border-radius: 20px;
-        margin-bottom: 3rem;
-    }
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 107, 107, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-            top: 50%;
-            left: 10%;
-            transform: translateY(-50%);
-            animation: float 6s ease-in-out infinite;
-        }
+@{
+    var user = Context.User;
+}
 
-        .hero-section::after {
-            content: '';
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-            top: 20%;
-            right: 15%;
-            animation: float 4s ease-in-out infinite reverse;
-        }
-
-    @@keyframes float {
-        0%, 100%
-
-    {
-        transform: translateY(-50%) rotate(0deg);
-    }
-
-    50% {
-        transform: translateY(-60%) rotate(180deg);
-    }
-
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .hero-title {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-        font-weight: 700;
-        background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .hero-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .btn-hero {
-        padding: 0.8rem 2rem;
-        font-size: 1.1rem;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-primary {
-        background: #ff6b6b;
-        color: white;
-    }
-
-        .btn-primary:hover {
-            background: #ff5252;
-            transform: translateY(-2px);
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-secondary {
-        background: transparent;
-        color: #fff;
-        border: 2px solid #fff;
-    }
-
-        .btn-secondary:hover {
-            background: #fff;
-            color: #667eea;
-            text-decoration: none;
-        }
-
-    .features-section {
-        padding: 3rem 0;
-    }
-
-    .section-title {
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 3rem;
-        color: #333;
-        font-weight: 700;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
-    }
-
-    .feature-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        padding: 2rem;
-        border-radius: 20px;
-        text-align: center;
-        transition: all 0.3s ease;
-        border: 1px solid #dee2e6;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
-    .feature-icon {
-        font-size: 3rem;
-        color: #ff6b6b;
-        margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        color: #333;
-        font-weight: 600;
-    }
-
-    .feature-card p {
-        color: #666;
-        line-height: 1.6;
-    }
-
-    .feature-card a {
-        display: inline-block;
-        margin-top: 1rem;
-        padding: 0.5rem 1.5rem;
-        background: #ff6b6b;
-        color: white;
-        text-decoration: none;
-        border-radius: 15px;
-        transition: all 0.3s ease;
-    }
-
-        .feature-card a:hover {
-            background: #ff5252;
-            transform: translateY(-2px);
-            text-decoration: none;
-            color: white;
-        }
-
-    .stats-section {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 3rem 0;
-        border-radius: 20px;
-        margin: 3rem 0;
-        text-align: center;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-        margin-top: 2rem;
-    }
-
-    .stat-item {
-        padding: 1rem;
-    }
-
-    .stat-number {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #ffd93d;
-        display: block;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-        font-size: 1.1rem;
-        opacity: 0.9;
-    }
-
-    .trending-section {
-        padding: 3rem 0;
-        background: #f8f9fa;
-        border-radius: 20px;
-        margin: 3rem 0;
-    }
-
-    .trending-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-top: 2rem;
-    }
-
-    .trending-item {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-        .trending-item:hover {
-            transform: translateY(-5px);
-        }
-
-    .trending-icon {
-        font-size: 2rem;
-        color: #ff6b6b;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 107, 107, 0.1);
-        border-radius: 50%;
-    }
-
-    .trending-info h4 {
-        color: #333;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
-
-    .trending-info p {
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .cta-section {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 100%);
-        color: white;
-        padding: 3rem 0;
-        text-align: center;
-        border-radius: 20px;
-        margin: 3rem 0;
-    }
-
-    .cta-title {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        font-weight: 700;
-    }
-
-    .cta-subtitle {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-    }
-
-    .music-viz {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        align-items: end;
-        gap: 2px;
-        z-index: 1000;
-    }
-
-    .bar {
-        width: 3px;
-        background: #ff6b6b;
-        border-radius: 2px;
-        animation: musicBars 1s ease-in-out infinite;
-    }
-
-        .bar:nth-child(1) {
-            height: 20px;
-            animation-delay: 0s;
-        }
-
-        .bar:nth-child(2) {
-            height: 30px;
-            animation-delay: 0.1s;
-        }
-
-        .bar:nth-child(3) {
-            height: 25px;
-            animation-delay: 0.2s;
-        }
-
-        .bar:nth-child(4) {
-            height: 35px;
-            animation-delay: 0.3s;
-        }
-
-        .bar:nth-child(5) {
-            height: 20px;
-            animation-delay: 0.4s;
-        }
-
-    @@keyframes musicBars {
-        0%, 100%
-
-    {
-        transform: scaleY(1);
-    }
-
-    50% {
-        transform: scaleY(0.3);
-    }
-
-    }
-
-    .user-dashboard {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 3rem 0;
-        border-radius: 20px;
-        margin-bottom: 3rem;
-        text-align: center;
-    }
-
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
-        margin-top: 2rem;
-    }
-
-    .dashboard-card {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 2rem;
-        border-radius: 15px;
-        text-align: center;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-    }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-    .dashboard-icon {
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-        color: #ffd93d;
-    }
-
-    .dashboard-card h3 {
-        font-size: 1.3rem;
-        margin-bottom: 1rem;
-        color: white;
-    }
-
-    .dashboard-card p {
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 1.5rem;
-        font-size: 0.9rem;
-    }
-
-    .dashboard-card a {
-        display: inline-block;
-        padding: 0.7rem 1.5rem;
-        background: #ff6b6b;
-        color: white;
-        text-decoration: none;
-        border-radius: 20px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-        .dashboard-card a:hover {
-            background: #ff5252;
-            transform: translateY(-2px);
-            text-decoration: none;
-            color: white;
-        }
-
-    /* Responsive Design */
-    @@media (max-width: 768px) {
-        .hero-title
-
-    {
-        font-size: 2.5rem;
-    }
-
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .section-title {
-        font-size: 2rem;
-    }
-
-    .cta-title {
-        font-size: 2rem;
-    }
-
-    }
-</style>
-
-@if (User.Identity.IsAuthenticated)
+@if (!user.Identity.IsAuthenticated)
 {
-    <!-- Dashboard para Usuario Logueado -->
-    <div class="user-dashboard">
-        <div class="hero-content">
-            <h1 class="hero-title">¡Bienvenido de vuelta! 🎵</h1>
-            <p class="hero-subtitle">¿Qué quieres hacer hoy en SonikoMusic?</p>
-        </div>
-
-        <div class="dashboard-grid">
-            @if (User.IsInRole("users"))
-            {
-                <div class="dashboard-card">
-                    <div class="dashboard-icon">🎧</div>
-                    <h3>Mi Biblioteca</h3>
-                    <p>Gestiona tus playlists favoritas y música guardada</p>
-                    <a href="/Music/MyPlaylists">Ver Playlists</a>
-                </div>
-            }
-
-            @if (User.IsInRole("artists"))
-            {
-                <div class="dashboard-card">
-                    <div class="dashboard-icon">🎤</div>
-                    <h3>Panel de Artista</h3>
-                    <p>Sube nueva música y gestiona tu contenido</p>
-                    <a href="/Artist/UploadMusic">Subir Música</a>
-                </div>
-            }
-
-            @if (User.IsInRole("admins"))
-            {
-                <div class="dashboard-card">
-                    <div class="dashboard-icon">⚙️</div>
-                    <h3>Administración</h3>
-                    <p>Gestionar usuarios y configuración del sistema</p>
-                    <a href="/Admin/Users">Panel Admin</a>
-                </div>
-            }
-
-            <div class="dashboard-card">
-                <div class="dashboard-icon">📊</div>
-                <h3>Mi Dashboard</h3>
-                <p>Resumen completo de tu actividad musical</p>
-                <a href="/Dashboard">Ver Dashboard</a>
-            </div>
+    <div class="hero-panel">
+        <h1 class="hero-title">Bienvenido a <span style="color:#00f7ff;">SonikoMusic</span></h1>
+        <p class="hero-subtitle">La plataforma donde los artistas independientes y los amantes de la música se encuentran.</p>
+        <div class="hero-actions">
+            <a class="btn btn-glow" href="/Account/Register">Únete Ahora</a>
+            <a class="btn btn-outline" href="/Account/Login">Iniciar Sesión</a>
         </div>
     </div>
 
-    <!-- Explorar para usuarios logueados -->
-    <div class="trending-section">
-        <h2 class="section-title">Continúa Explorando</h2>
-        <div class="trending-grid">
-            <div class="trending-item">
-                <div class="trending-icon">🎵</div>
-                <div class="trending-info">
-                    <h4>Nuevos Álbumes</h4>
-                    <p>Descubre los últimos lanzamientos</p>
-                </div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-icon">📋</div>
-                <div class="trending-info">
-                    <h4>Playlists Populares</h4>
-                    <p>Lo que otros usuarios están escuchando</p>
-                </div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-icon">🔥</div>
-                <div class="trending-info">
-                    <h4>Música Trending</h4>
-                    <p>Lo más popular de la semana</p>
-                </div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-icon">🎨</div>
-                <div class="trending-info">
-                    <h4>Artistas Emergentes</h4>
-                    <p>Nuevos talentos que debes conocer</p>
-                </div>
-            </div>
+    <div class="feature-section">
+        <div class="feature-card">
+            <h3>🎧 Descubre</h3>
+            <p>Explora una variedad de estilos musicales creados por artistas emergentes de todo el mundo.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🎶 Crea</h3>
+            <p>Arma tus propias playlists con tus canciones favoritas y llévalas donde quieras.</p>
+        </div>
+        <div class="feature-card">
+            <h3>💬 Conecta</h3>
+            <p>Conviértete en parte de una comunidad apasionada por la música. Sigue artistas y comparte lo que amas.</p>
         </div>
     </div>
+
 }
-else
+else if (user.IsInRole("admins"))
 {
-    <!-- Landing Page para usuarios no logueados -->
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">Bienvenido a SonikoMusic</h1>
-            <p class="hero-subtitle">La plataforma que conecta artistas y amantes de la música. Descubre nuevos talentos o comparte tu arte con el mundo.</p>
-            <div class="hero-buttons">
-                <a href="/Account/Register" class="btn-hero btn-primary">
-                    👤 Únete Ahora
-                </a>
-                <a href="/Account/Login" class="btn-hero btn-secondary">
-                    🚀 Iniciar Sesión
-                </a>
-            </div>
+    <div class="hero-panel">
+        <h1 class="hero-title">Panel de Administración</h1>
+        <p class="hero-subtitle">Gestiona el ecosistema musical de SonikoMusic con control total y visibilidad completa.</p>
+    </div>
+
+    <div class="feature-section">
+        <div class="feature-card">
+            <h3>🛠️ Gestión de Usuarios</h3>
+            <p>Visualiza y administra las cuentas de usuarios, artistas y moderadores registrados.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🔎 Moderación de Contenido</h3>
+            <p>Supervisa canciones, álbumes y perfiles para asegurar que todo cumpla las políticas.</p>
+        </div>
+        <div class="feature-card">
+            <h3>📊 Reportes y Estadísticas</h3>
+            <p>Accede a datos clave sobre actividad, tráfico, y comportamiento dentro de la plataforma.</p>
         </div>
     </div>
 
-    <!-- Features Section -->
-    <div class="features-section">
-        <h2 class="section-title">¿Qué puedes hacer en SonikoMusic?</h2>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">👤</div>
-                <h3>Como Usuario</h3>
-                <p>Descubre música de artistas locales, crea tus playlists favoritas y apoya a nuevos talentos.</p>
-                <a href="/Music">Explorar Música</a>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎤</div>
-                <h3>Como Artista</h3>
-                <p>Sube tu música, comparte tu arte y conecta con fans que realmente aprecian tu trabajo.</p>
-                <a href="/Account/Register">Ser Artista</a>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💖</div>
-                <h3>Conecta</h3>
-                <p>Une a artistas y oyentes en una comunidad musical única y auténtica.</p>
-                <a href="/Albums">Ver Álbumes</a>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⭐</div>
-                <h3>Descubre</h3>
-                <p>Encuentra nueva música y talentos emergentes antes que nadie.</p>
-                <a href="/Playlists">Ver Playlists</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stats Section -->
-    <div class="stats-section">
-        <h2 class="section-title">Una Plataforma, Dos Experiencias</h2>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <span class="stat-number">👥</span>
-                <div class="stat-label">Usuarios</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">+</span>
-                <div class="stat-label">Más</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">🎤</span>
-                <div class="stat-label">Artistas</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">=</span>
-                <div class="stat-label">Igual a</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">🎵</span>
-                <div class="stat-label">Magia Musical</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Role Selection Section -->
-    <div class="trending-section">
-        <h2 class="section-title">Elige tu Camino Musical</h2>
-        <div class="trending-grid">
-            <div class="trending-item">
-                <div class="trending-icon">🎧</div>
-                <div class="trending-info">
-                    <h4>Soy Usuario</h4>
-                    <p>Quiero descubrir y escuchar música</p>
-                </div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-icon">🎸</div>
-                <div class="trending-info">
-                    <h4>Soy Artista</h4>
-                    <p>Quiero compartir mi música con el mundo</p>
-                </div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-icon">🎵</div>
-                <div class="trending-info">
-                    <h4>Explora Géneros</h4>
-                    <p>Desde rock hasta electrónica</p>
-                </div>
-            </div>
-            <div class="trending-item">
-                <div class="trending-icon">🌍</div>
-                <div class="trending-info">
-                    <h4>Comunidad Local</h4>
-                    <p>Apoya el talento de tu región</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CTA Section -->
-    <div class="cta-section">
-        <h2 class="cta-title">¿Listo para Comenzar?</h2>
-        <p class="cta-subtitle">Únete a la comunidad musical que está revolucionando la forma de descubrir arte</p>
-        <div class="hero-buttons">
-            <a href="/Account/Register" class="btn-hero btn-secondary">
-                👤 Crear Cuenta Gratis
-            </a>
-            <a href="/Account/Login" class="btn-hero btn-primary">
-                🚀 Iniciar Sesión
-            </a>
-        </div>
-    </div>
 }
+else if (user.IsInRole("artists"))
+{
+    <div class="hero-panel">
+        <h1 class="hero-title">¡Bienvenido, Artista!</h1>
+        <p class="hero-subtitle">Este es tu espacio para brillar. Publica, conecta y haz que tu música vuele alto.</p>
+    </div>
 
-<!-- Music Visualization -->
-<div class="music-viz">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-</div>
+    <div class="feature-section">
+        <div class="feature-card">
+            <h3>🎤 Publica tu Música</h3>
+            <p>Sube canciones, álbumes y comparte tu esencia con miles de oyentes en todo el mundo.</p>
+        </div>
+        <div class="feature-card">
+            <h3>📈 Analiza tu Impacto</h3>
+            <p>Consulta estadísticas detalladas sobre reproducciones, seguidores y favoritos.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🤝 Conecta con tus Fans</h3>
+            <p>Recibe apoyo, comentarios y forma una comunidad que te respalde en cada paso.</p>
+        </div>
+    </div>
+
+}
+else if (user.IsInRole("users"))
+{
+    <div class="hero-panel">
+        <h1 class="hero-title">¡Hola de nuevo!</h1>
+        <p class="hero-subtitle">Sumérgete en tu mundo musical. Disfruta, crea y apoya a tus artistas favoritos.</p>
+    </div>
+
+    <div class="feature-section">
+        <div class="feature-card">
+            <h3>🔍 Explora Música</h3>
+            <p>Descubre nuevas canciones cada día y sumérgete en distintos géneros y culturas.</p>
+        </div>
+        <div class="feature-card">
+            <h3>📂 Tus Playlists</h3>
+            <p>Organiza tus temas favoritos en listas personalizadas y escúchalas cuando quieras.</p>
+        </div>
+        <div class="feature-card">
+            <h3>🎁 Apoya Talento</h3>
+            <p>Valora el trabajo de artistas independientes con cada reproducción y seguimiento.</p>
+        </div>
+    </div>
+
+}

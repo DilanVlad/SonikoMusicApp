@@ -3,28 +3,68 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    position: relative;
+    background-color: #11031a; /* Color similar al de tu gradiente */
 }
 
+    body::before {
+        content: '';
+        position: fixed;
+        top: -10px;
+        left: -10px;
+        width: calc(100% + 20px);
+        height: calc(100% + 20px);
+        background: linear-gradient(rgba(72, 176, 255, 0.446), rgba(17, 3, 26, 0.874)), url('../images/fondo1.png');
+        background-size: cover;
+        background-position: center;
+        filter: blur(10px);
+        z-index: -1;
+    }
 header {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: 200px;
+    width: calc(100% - 200px); /* Ajusta el ancho si left: 200px */
     z-index: 1000;
     height: 60px;
+    background-color: rgba(255, 255, 255, 0); /* Fondo semi-transparente */
+    backdrop-filter: blur(5px); /* Difumina el fondo detrás */
+    -webkit-backdrop-filter: blur(5px); /* Soporte para Safari */
+    box-shadow: 0 5px 10px -5px rgba(0, 0, 0, 0.2); /* Opcional: sombra para mejor contraste */
 }
 
 aside {
     position: fixed;
-    top: 60px;
+    top: 0;
     left: 0;
     width: 200px;
-    height: calc(100vh - 60px);
-    background-color: #f8f9fa;
+    height: 100vh;
+    background: linear-gradient(180deg, rgba(38, 0, 73, 0.9), rgba(17, 153, 142, 0.9));
+    box-shadow: 5px 0 10px -5px rgba(0, 0, 0, 0.323);
+    background-color: #ffffff;
     padding: 20px 0;
-    border-right: 1px solid #dee2e6;
     overflow-y: auto;
+    color: #dfdfdf;
 }
+    aside .navbar-brand {
+        color: #ffffff;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+    }
+    aside .nav-link {
+        color: #e8e9f3;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        padding: 10px 15px;
+        font-weight: 500;
+    }
+    aside .nav-title {
+        color: #a8a8a8;
+        padding: 20px 0px;
+        font-size: 0.7em;
+        font-weight: bold;
+    }
 
 .main-wrapper {
     margin-left: 200px;
@@ -41,7 +81,10 @@ aside {
 
 footer {
     margin-top: auto;
-    padding: 10px 15px;
+    background: linear-gradient(180deg, rgba(38, 0, 73, 0), rgba(86, 86, 86, 0.406));
+    color: #5a5a5a;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .search-bar {
@@ -65,3 +108,210 @@ footer {
         cursor: pointer;
     }
 
+
+.music-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #343a40;
+    color: white;
+    padding: 10px;
+    z-index: 1000;
+    border-top: 1px solid #dee2e6;
+}
+
+.player-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.song-info {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.player-controls {
+    display: flex;
+    gap: 10px;
+}
+
+    .player-controls button {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 5px 10px;
+        border-radius: 3px;
+    }
+
+        .player-controls button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 300px;
+}
+
+#progressBar {
+    flex: 1;
+}
+
+
+/*Index*/
+.feature-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    max-width: 300px;
+    min-height: 200px;
+    backdrop-filter: blur(12px);
+    color: #ffffff;
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease;
+}
+
+    .feature-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+    }
+
+.hero-panel {
+    text-align: center;
+    padding: 3rem 2rem 1rem;
+    color: #fff;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    color: #d3d3d3;
+}
+
+.hero-actions .btn {
+    margin: 0 1rem;
+    padding: 0.7rem 1.5rem;
+    font-weight: 500;
+    border-radius: 30px;
+}
+
+.btn-glow {
+    background: linear-gradient(145deg, #8242ff, #00f7ff);
+    color: white;
+    border: none;
+    box-shadow: 0 0 10px #00f7ff;
+}
+
+.btn-outline {
+    border: 1px solid #00f7ff;
+    color: #00f7ff;
+    background: transparent;
+}
+
+    .btn-outline:hover {
+        background-color: #00f7ff;
+        color: black;
+    }
+
+/* Contenedor principal */
+.search-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Grupo de entrada */
+.search-input-group {
+    display: flex;
+    height: 42px;
+    border-radius: 25px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Campo de entrada */
+.search-input {
+    flex: 1;
+    padding: 0 20px;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+    .search-input:focus {
+        background: white;
+        box-shadow: inset 0 0 0 2px rgba(72, 176, 255, 0.5);
+    }
+
+/* Botón de búsqueda */
+.search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 20px;
+    border: none;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .search-button:hover {
+        background: linear-gradient(135deg, #5d7de8, #9666d6);
+    }
+
+.search-icon {
+    font-size: 0.9rem;
+}
+
+.search-text {
+    display: inline-block;
+}
+
+
+@@media (max-width: 768px) {
+    .search-container {
+        margin: 0 10px;
+    }
+
+    .search-input {
+        padding: 0 15px;
+    }
+
+    .search-button {
+        padding: 0 15px;
+    }
+
+    .search-text {
+        display: none;
+    }
+}

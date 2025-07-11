@@ -3,32 +3,36 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Application.MVC</title>
+    <title>@ViewData["Title"] - SonikoMusic</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Application.MVC.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="~/css/LoginPartial.css" asp-append-version="true" />
     
 </head>
 
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
-            <div class="container-fluid">
-                <!-- Brand/Logo -->
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-music"></i> SonikoMusic
-                </a>
 
+<body>
+    <header id="soniko-header" >
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm" id="soniko-navbar">
+            <div class="container-fluid">
+                
                 <!-- Search Bar -->
-                <div class="d-flex flex-grow-1 mx-3">
-                    <form asp-controller="Musics" asp-action="Search" method="get" class="search-bar">
-                        <input type="text" name="query" placeholder="Buscar música, artistas..." />
-                        <button type="submit">
-                            <i class="fas fa-search"></i> BUSCAR
-                        </button>
+                <div class="search-container flex-grow-1 mx-3">
+                    <form asp-controller="Musics" asp-action="Search" method="get" class="search-form">
+                        <div class="search-input-group">
+                            <input type="text"
+                                   name="query"
+                                   placeholder="Buscar música, artistas..."
+                                   class="search-input"
+                                   aria-label="Buscar música o artistas" />
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search search-icon"></i>
+                                <span class="search-text">BUSCAR</span>
+                            </button>
+                        </div>
                     </form>
                 </div>
 
@@ -44,69 +48,91 @@
             </div>
         </nav>
     </header>
-
-    
-        
     <aside>
         <nav>
+            
             <div class="container-fluid">
+                <div class="navbar-brand">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <span class="nav-icon">SonikoMusic</span>
+                     
+                    </a>
+                </div>
                 <ul class="navbar-nav flex-column">
+                    <!-- Sección Principal -->
+                    <div class="nav-section">
+                        <div class="nav-title">PRINCIPAL</div>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <span class="nav-icon">🏠</span>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Musics" asp-action="SearchResults">
+                            <span class="nav-icon">🔍</span>
+                            <span>Explorar</span>
+                        </a>
+                    </li>
+            </div>
 
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
-                            <i class="fas fa-home"></i> Inicio
-                        </a>
-                    </li>
-                    @if((User.Identity.IsAuthenticated)){
+            <!-- Sección Música -->
+            <div class="nav-section">
+                <div class="nav-title">TU MÚSICA</div>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Musics" asp-action="Index">
+                        <span class="nav-icon">🎵</span>
+                        <span>Músicas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Musics" asp-action="Create">
+                        <span class="nav-icon">⬆️</span>
+                        <span>Subir Música</span>
+                    </a>
+                </li>
+                
+            </div>
 
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Musics" asp-action="Index">
-                            <i class="fas fa-music"></i> Músicas
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Music" asp-action="Create">
-                            <i class="fas fa-plus"></i> Subir Música
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="User" asp-action="Favorites">
-                            <i class="fas fa-heart"></i> Favoritos
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="User" asp-action="Library">
-                            <i class="fas fa-book"></i> Librería
-                        </a>
-                    </li>
-                    }
-                </ul>
+            <!-- Sección Personal -->
+            <div class="nav-section">
+                <div class="nav-title">PERSONAL</div>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="PlayLists" asp-action="Index">
+                        <span class="nav-icon">❤️</span>
+                        <span>PlayLists</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Albums" asp-action="Index">
+                        <span class="nav-icon">📚</span>
+                        <span>Álbums</span>
+                    </a>
+                </li>
+            </div>
+            </ul>
             </div>
         </nav>
     </aside>
 
-    
-    <div class="main-wrapper">
+
+    <div class="main-wrapper" id="soniko-main">
         <div class="container-fluid">
-            <main role="main" class="pb-3">
+            <main role="main" class="pb-3" style="background-color: rgba(195, 195, 195, 0.135)">
                 @RenderBody()
             </main>
         </div>
 
-        <footer class="border-top text-muted" style="background-color: #f8f9fa;">
-            <div>
-                &copy; 2025 - Application.MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-            </div>
+        <footer id="soniko-footer">
+            &copy; 2025 - SonikoMusic 
         </footer>
     </div>
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/soniko-player.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-
-    
     <!-- Reproductor de música fijo -->
     <div id="musicPlayer" class="music-player" style="display: none;">
         <div class="player-content">
@@ -114,7 +140,9 @@
                 <span id="currentSong">Ninguna canción seleccionada</span>
             </div>
             <div class="player-controls">
+                <button id="prevBtn" onclick="previousTrack()" title="Anterior">⏮️</button>
                 <button id="playPauseBtn" onclick="togglePlayPause()">▶️</button>
+                <button id="nextBtn" onclick="nextTrack()" title="Siguiente">⏭️</button>
                 <button onclick="stopMusic()">⏹️</button>
             </div>
             <div class="progress-container">
@@ -124,147 +152,6 @@
         </div>
         <audio id="audioPlayer" ontimeupdate="updateProgress()" onended="onSongEnd()"></audio>
     </div>
-
-    <style>
-        .music-player {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #343a40;
-            color: white;
-            padding: 10px;
-            z-index: 1000;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .player-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .song-info {
-            flex: 1;
-            padding-right: 20px;
-        }
-
-        .player-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-            .player-controls button {
-                background: none;
-                border: none;
-                color: white;
-                font-size: 18px;
-                cursor: pointer;
-                padding: 5px 10px;
-                border-radius: 3px;
-            }
-
-                .player-controls button:hover {
-                    background: rgba(255,255,255,0.1);
-                }
-
-        .progress-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-            max-width: 300px;
-        }
-
-        #progressBar {
-            flex: 1;
-        }
-    </style>
-
-    <script>
-        let currentAudio = null;
-        let isPlaying = false;
-
-        function playMusic(id, titulo, artista, audioUrl) {
-            const player = document.getElementById('musicPlayer');
-            const audioPlayer = document.getElementById('audioPlayer');
-            const songInfo = document.getElementById('currentSong');
-            const playPauseBtn = document.getElementById('playPauseBtn');
-
-            player.style.display = 'block';
-            songInfo.textContent = `${titulo} - ${artista}`;
-            audioPlayer.src = audioUrl;
-            audioPlayer.load();
-            audioPlayer.play();
-            isPlaying = true;
-            playPauseBtn.textContent = '⏸️';
-        }
-
-        function togglePlayPause() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            const playPauseBtn = document.getElementById('playPauseBtn');
-
-            if (isPlaying) {
-                audioPlayer.pause();
-                playPauseBtn.textContent = '▶️';
-                isPlaying = false;
-            } else {
-                audioPlayer.play();
-                playPauseBtn.textContent = '⏸️';
-                isPlaying = true;
-            }
-        }
-
-        function stopMusic() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            const playPauseBtn = document.getElementById('playPauseBtn');
-
-            audioPlayer.pause();
-            audioPlayer.currentTime = 0;
-            playPauseBtn.textContent = '▶️';
-            isPlaying = false;
-        }
-
-        function updateProgress() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            const progressBar = document.getElementById('progressBar');
-            const currentTime = document.getElementById('currentTime');
-            const duration = document.getElementById('duration');
-
-            if (audioPlayer.duration) {
-                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                progressBar.value = progress;
-
-                currentTime.textContent = formatTime(audioPlayer.currentTime);
-                duration.textContent = formatTime(audioPlayer.duration);
-            }
-        }
-
-        function seekTo() {
-            const audioPlayer = document.getElementById('audioPlayer');
-            const progressBar = document.getElementById('progressBar');
-
-            if (audioPlayer.duration) {
-                const seekTime = (progressBar.value / 100) * audioPlayer.duration;
-                audioPlayer.currentTime = seekTime;
-            }
-        }
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        function onSongEnd() {
-            const playPauseBtn = document.getElementById('playPauseBtn');
-            playPauseBtn.textContent = '▶️';
-            isPlaying = false;
-        }
-    </script>
-
 
 </body>
 </html>

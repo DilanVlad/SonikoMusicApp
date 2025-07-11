@@ -1,0 +1,191 @@
+﻿/* Estilos generales para Login y Register */
+.auth-container {
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    padding: 2rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.auth-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    background-color: rgba(30, 30, 40, 0.4);
+    color: white;
+}
+
+.auth-card-header {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: none;
+}
+
+    .auth-card-header h3 {
+        margin: 0;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+.auth-card-body {
+    padding: 2rem;
+}
+
+/* Campos de formulario - Blanco translúcido */
+.auth-form .form-control,
+.auth-form .form-select {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    padding: 12px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    height: auto;
+}
+
+    .auth-form .form-control:focus,
+    .auth-form .form-select:focus {
+        background-color: rgba(255, 255, 255, 0.25); /* Blanco 25% al enfocar */
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .auth-form .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+/* Alertas */
+.auth-alert {
+    border-radius: 8px;
+    border-left: 4px solid;
+}
+
+.auth-alert-success {
+    border-left-color: #28a745;
+}
+
+.auth-alert-danger {
+    border-left-color: #dc3545;
+}
+
+/* Botones */
+.auth-btn {
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.auth-btn-primary {
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    border: none;
+}
+
+    .auth-btn-primary:hover {
+        background: linear-gradient(135deg, #5d7de8, #9666d6);
+        transform: translateY(-2px);
+    }
+
+/* Roles */
+.role-option {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+    .role-option:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(72, 176, 255, 0.3);
+    }
+
+    .role-option i {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .role-option strong {
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .role-option small {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+/* Enlaces */
+.auth-link {
+    color: #6e8efb;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+    .auth-link:hover {
+        color: #a777e3;
+        text-decoration: underline;
+    }
+
+/* Checkbox personalizado */
+.form-check-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+    .form-check-input:checked {
+        background-color: #6e8efb;
+        border-color: #6e8efb;
+    }
+
+/* Validación */
+.text-danger {
+    color: #ff6b6b !important;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Divider */
+.auth-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 1.5rem 0;
+}
+
+/* Info box */
+.auth-info-box {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 1rem;
+    }
+
+    .auth-card-body {
+        padding: 1.5rem;
+    }
+
+    .role-option {
+        margin-bottom: 1rem;
+    }
+}

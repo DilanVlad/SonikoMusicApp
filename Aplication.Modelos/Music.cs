@@ -1,4 +1,6 @@
-﻿using Application.Models.Identity;
+﻿using Application.Models.Favorite;
+using Application.Models.Identity;
+using Application.Models.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +27,9 @@ namespace Application.Models
         public User? Artist { get; set; }
         public Album? Album { get; set; }
         public List<PlaylistMusic>? PlaylistMusics { get; set; }
+        public List<FavoriteMusic>? FavoriteMusics { get; set; }
+        public List<Download>? Downloads { get; set; }
+
 
         // enums of Genres
         public enum MusicalGenre

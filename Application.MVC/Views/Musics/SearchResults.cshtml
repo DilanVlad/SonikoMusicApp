@@ -15,6 +15,9 @@
 }
 
 <div class="container mt-4">
+    <form style="display: none;">
+        @Html.AntiForgeryToken()
+    </form>
     <div class="mb-4">
         @if (ViewBag.ShowingAll == true)
         {
@@ -59,9 +62,17 @@
                                 </div>
                             </div>
                             <div class="music-actions">
-                                <button class="play-btn-small">
+                                <button class="play-btn-small"
+                                        onclick="playMusic(@music.Id, '@music.Title', '@music.Artist?.FirstName @music.Artist?.LastName', '/files/@music.FilePath'); event.stopPropagation();">
                                     <i class="fas fa-play"></i>
                                 </button>
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <button class="playlist-btn-small" onclick="event.stopPropagation(); showAddToPlaylistModal(@music.Id, '@music.Title');" title="Agregar a Playlist">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                }
                             </div>
                         </div>
                     }
@@ -110,9 +121,17 @@
                                 </div>
                             </div>
                             <div class="music-actions">
-                                <button class="play-btn">
+                                <button class="play-btn"
+                                        onclick="playMusic(@music.Id, '@music.Title', '@music.Artist?.FirstName @music.Artist?.LastName', '/files/@music.FilePath'); event.stopPropagation();">
                                     <i class="fas fa-play"></i>
                                 </button>
+
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <button class="playlist-btn" onclick="event.stopPropagation(); showAddToPlaylistModal(@music.Id, '@music.Title');" title="Agregar a Playlist">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                }
                             </div>
                         </div>
                     }
@@ -142,9 +161,84 @@
             </a>
         </div>
     }
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="modal fade" id="addToPlaylistModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-list"></i> Agregar a Playlist
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Agregar "<span id="songTitle"></span>" a:</p>
+                        <div id="playlistsList">
+                            <div class="text-center">
+                                <i class="fas fa-spinner fa-spin"></i> Cargando playlists...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <a asp-controller="Playlists" asp-action="Create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Crear Nueva Playlist
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
 </div>
 
 <style>
+    .playlist-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #007bff;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 12px;
+        margin-left: 8px;
+    }
+
+        .playlist-btn:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+    .playlist-btn-small {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #007bff;
+        border: none;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 10px;
+        margin-left: 6px;
+    }
+
+        .playlist-btn-small:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+
     .search-section {
         margin-bottom: 2rem;
     }
@@ -313,11 +407,175 @@
         .no-results .text-muted {
             font-size: 16px;
         }
+
+    .playlist-item {
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+        .playlist-item:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+    .playlist-info {
+        flex: 1;
+    }
+        .playlist-info strong {
+            font-size: 16px;
+            color: #333;
+        }
+        .playlist-info .text-muted {
+            font-size: 14px;
+            color: #666;
+		}   
 </style>
 
 <script>
     function showMoreArtists() {
-        // Aquí puedes expandir la lista o redirigir a página completa
+        // Expansión 
         alert('Funcionalidad para mostrar más artistas - por implementar');
+    }
+
+    let currentMusicId = 0;
+
+    function showAddToPlaylistModal(musicId, songTitle) {
+        currentMusicId = musicId;
+        document.getElementById('songTitle').textContent = songTitle;
+        // Cargar playlists del usuario
+        loadUserPlaylists();
+        // Mostrar modal
+        new bootstrap.Modal(document.getElementById('addToPlaylistModal')).show();
+    }
+
+    function loadUserPlaylists() {
+        const container = document.getElementById('playlistsList');
+        container.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Cargando playlists...</div>';
+
+        // Llamada AJAX para obtener playlists del usuario
+        fetch('/Playlists/GetUserPlaylists')
+            .then(response => response.json())
+            .then(data => {
+                container.innerHTML = '';
+
+                if (data.error) {
+                    container.innerHTML = '<p class="text-danger">Error: ' + data.error + '</p>';
+                    return;
+                }
+
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center p-3">
+                            <i class="fas fa-list fa-2x text-muted mb-2"></i>
+                            <p class="text-muted">No tienes playlists aún.</p>
+                            <p class="text-muted">Crea tu primera playlist para agregar música.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                data.forEach(playlist => {
+                    const playlistItem = document.createElement('div');
+                    playlistItem.className = 'd-flex justify-content-between align-items-center p-3 border rounded mb-2 playlist-item';
+                    playlistItem.innerHTML = `
+                        <div class="playlist-info">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-list text-success me-2"></i>
+                                <div>
+                                    <strong>${playlist.name}</strong>
+                                    <div class="small text-muted">
+                                        ${playlist.description || 'Sin descripción'} •
+                                        ${playlist.songsCount} canción(es) •
+                                        ${playlist.isPublic ? '🌐 Pública' : '🔒 Privada'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-sm" onclick="addToPlaylist(${playlist.id}, '${playlist.name}')">
+                            <i class="fas fa-plus"></i> Agregar
+                        </button>
+
+                    `;
+                    container.appendChild(playlistItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading playlists:', error);
+                container.innerHTML = '<p class="text-danger">Error al cargar playlists. Intenta de nuevo.</p>';
+            });
+    }
+
+    
+    function addToPlaylist(playlistId, playlistName) {
+        // Mostrar loading en el botón
+        const button = event.target.closest('button');
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Agregando...';
+        button.disabled = true;
+
+        // Crear FormData para enviar POST
+        const formData = new FormData();
+        formData.append('playlistId', playlistId);
+        formData.append('musicId', currentMusicId);
+
+        // Obtener token antiforgery
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        if (token) {
+            formData.append('__RequestVerificationToken', token);
+        }
+
+        fetch('/PlaylistMusic/AddToPlaylist', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Éxito
+                button.innerHTML = '<i class="fas fa-check text-success"></i> ¡Agregada!';
+                button.className = 'btn btn-success btn-sm';
+
+                // Cerrar modal después de 1 segundo
+                setTimeout(() => {
+                    bootstrap.Modal.getInstance(document.getElementById('addToPlaylistModal')).hide();
+                    showNotification(`Música agregada a "${playlistName}" exitosamente`, 'success');
+                }, 1000);
+            } else {
+                // Error
+                button.innerHTML = originalContent;
+                button.disabled = false;
+                showNotification('Error al agregar música a la playlist', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            button.innerHTML = originalContent;
+            button.disabled = false;
+            showNotification('Error de conexión', 'error');
+        });
+    }
+
+    
+    function showNotification(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle';
+
+        const notification = document.createElement('div');
+        notification.className = `alert ${alertClass} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            <i class="${icon}"></i> ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto-remover después de 5 segundos
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
     }
 </script>

@@ -48,7 +48,12 @@ namespace Application.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Playlist>> GetPlaylist(int id)
         {
-            var playlist = await _context.Playlists.FindAsync(id);
+            var playlist = await _context.Playlists
+                .Include(p => p.User)
+                .Include(p => p.PlaylistMusics.OrderBy(pm => pm.Order))
+                    .ThenInclude(pm => pm.Music)
+                        .ThenInclude(m => m.Artist)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (playlist == null)
             {
@@ -173,6 +178,9 @@ namespace Application.API.Controllers
                 .MaxAsync(pm => (int?)pm.Order) ?? 0;
             return maxOrder + 1;
         }
+
+
+        
 
     }
 }

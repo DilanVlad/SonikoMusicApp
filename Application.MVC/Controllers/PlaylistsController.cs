@@ -41,11 +41,53 @@ namespace Application.MVC.Controllers
             }
             return 0;
         }
-
+        private Playlist GetPlaylistWithMusics(int playlistId)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = client.GetAsync($"https://localhost:7095/api/Playlists/{playlistId}").Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = response.Content.ReadAsStringAsync().Result;
+                        var playlist = Newtonsoft.Json.JsonConvert.DeserializeObject<Playlist>(json);
+                        return playlist;
+                    }
+                    else
+                    {
+                        
+                        return Crud<Playlist>.GetById(playlistId);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                
+                return Crud<Playlist>.GetById(playlistId);
+            }
+        }
         // GET: PlaylistsController/Details/5
         public ActionResult Details(int id)
         {
-            var data = Crud<Playlist>.GetById(id);
+            var data = GetPlaylistWithMusics(id);
+            if (data.PlaylistMusics?.Any() == true)
+            {
+                var playlistTracks = data.PlaylistMusics.OrderBy(pm => pm.Order).Select(pm => new
+                {
+                    id = pm.Music.Id,
+                    titulo = pm.Music.Title,
+                    artista = $"{pm.Music.Artist?.FirstName} {pm.Music.Artist?.LastName}".Trim(),
+                    audioUrl = $"/files/{pm.Music.FilePath}"
+                }).ToList();
+
+                ViewBag.PlaylistTracksJson = System.Text.Json.JsonSerializer.Serialize(playlistTracks);
+            }
+            else
+            {
+                ViewBag.PlaylistTracksJson = "[]";
+            }
+
             return View(data);
         }
 
@@ -120,5 +162,34 @@ namespace Application.MVC.Controllers
                 return View(data);
             }
         }
+
+        // GET: /Playlists/GetUserPlaylists (para AJAX)
+        [HttpGet]
+        public JsonResult GetUserPlaylists()
+        {
+            try
+            {
+                var currentUserId = GetCurrentUserId();
+                var playlists = Crud<Playlist>.GetBy("user", currentUserId);
+
+                var playlistsData = playlists.Select(p => new {
+                    id = p.Id,
+                    name = p.Name,
+                    description = p.Description,
+                    isPublic = p.IsPublic,
+                    songsCount = p.PlaylistMusics?.Count ?? 0
+                });
+
+                return Json(playlistsData);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+        }
+
+
+
+
     }
 }

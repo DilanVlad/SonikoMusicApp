@@ -1,6 +1,8 @@
 using Application.API.Consumer;
 using Application.Models;
 using Application.Models.Identity;
+using Application.Models.Implementations;
+using Application.Models.Suscription;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -18,6 +20,12 @@ namespace Application.MVC
             Crud<Application.Models.Music>.EndPoint = "https://localhost:7095/api/Musics";
             Crud<Application.Models.Album>.EndPoint = "https://localhost:7095/api/Albums"; 
             Crud<Application.Models.Playlist>.EndPoint = "https://localhost:7095/api/Playlists";
+
+            Crud<Download>.EndPoint = "https://localhost:7095/api/Downloads";
+            Crud<Follow>.EndPoint = "https://localhost:7095/api/Follow";
+            Crud<Notification>.EndPoint = "https://localhost:7095/api/Notifications";
+            Crud<SubscriptionPlan>.EndPoint = "https://localhost:7095/api/SubscriptionPlans";
+            Crud<UserSubscription>.EndPoint = "https://localhost:7095/api/UserSubscriptions";
 
 
             var builder = WebApplication.CreateBuilder(args);

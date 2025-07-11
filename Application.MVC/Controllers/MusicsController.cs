@@ -48,9 +48,30 @@ namespace Application.MVC.Controllers
         public ActionResult Create()
         {
             ViewBag.Genres = GetGenresList();
+            ViewBag.Albums = GetAlbumsList();
             return View();
         }
 
+        private List<SelectListItem> GetAlbumsList()
+        {
+            var currentUserId = GetCurrentUserId();
+            var albums = Crud<Album>.GetBy("artist", currentUserId);
+
+            var albumList = albums.Select(a => new SelectListItem
+            {
+                Value = a.Id.ToString(),
+                Text = a.Name
+            }).ToList();
+
+            // Agregar opción "Sin Album"
+            albumList.Insert(0, new SelectListItem
+            {
+                Value = "",
+                Text = "-- Sin Album --"
+            });
+
+            return albumList;
+        }
         private List<SelectListItem> GetGenresList()
         {
             return Enum.GetValues(typeof(Music.MusicalGenre))
@@ -69,7 +90,7 @@ namespace Application.MVC.Controllers
         [RequestSizeLimit(50 * 1024 * 1024)] // 50MB
         [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
 
-        public ActionResult Create(Music data, IFormFile MusicFile)
+        public ActionResult Create(Music data, IFormFile MusicFile, int? AlbumId)
         {
             try
             {
@@ -78,25 +99,21 @@ namespace Application.MVC.Controllers
                 {
                     ModelState.AddModelError("", "Debe seleccionar un archivo de música");
                     ViewBag.Genres = GetGenresList();
+                    ViewBag.Albums = GetAlbumsList();
                     return View(data);
                 }
 
                 // Asignar campos automáticos
                 data.UploadDate = DateTime.Now;
-                data.ArtistId = GetCurrentUserId();
-
-                if (data.ArtistId == 0)
-                {
-                    ModelState.AddModelError("", "Debe estar logueado para subir música");
-                    ViewBag.Genres = GetGenresList();
-                    return View(data);
-                }
-
-                // Guardar archivo y obtener ruta
+                data.ArtistId = GetCurrentUserId();                
                 data.FilePath = SaveMusicFile(MusicFile, data.ArtistId);
-
-                // Obtener duración del archivo o usar valor por defecto
                 data.Duration = GetAudioDuration(data.FilePath) ?? data.Duration ?? "";
+
+
+                if (AlbumId.HasValue && AlbumId.Value > 0)
+                {
+                    data.AlbumId = AlbumId.Value;
+                }
 
                 Crud<Music>.Create(data);
                 return RedirectToAction(nameof(Index));
@@ -105,6 +122,7 @@ namespace Application.MVC.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
                 ViewBag.Genres = GetGenresList();
+                ViewBag.Albums = GetAlbumsList();
                 return View(data);
             }
         }
@@ -116,6 +134,7 @@ namespace Application.MVC.Controllers
         {
             var data = Crud<Music>.GetById(id);
             ViewBag.Genres = GetGenresList();
+            ViewBag.Albums = GetAlbumsList();
             return View(data);
         }
 
@@ -125,7 +144,7 @@ namespace Application.MVC.Controllers
         [ValidateAntiForgeryToken]
         [RequestSizeLimit(50 * 1024 * 1024)]
         [RequestFormLimits(MultipartBodyLengthLimit = 50 * 1024 * 1024)]
-        public ActionResult Edit(int id, Music data, IFormFile MusicFile)
+        public ActionResult Edit(int id, Music data, IFormFile MusicFile, int? AlbumId)
         {
             try
             {
@@ -145,6 +164,15 @@ namespace Application.MVC.Controllers
                     data.Duration = GetAudioDuration(data.FilePath) ?? data.Duration ?? "";
                 }
 
+                if (AlbumId.HasValue && AlbumId.Value > 0)
+                {
+                    data.AlbumId = AlbumId.Value;
+                }
+                else
+                {
+                    data.AlbumId = null; // Sin album
+                }
+
                 Crud<Music>.Update(id, data);
                 TempData["Success"] = "Música actualizada exitosamente";
                 return RedirectToAction(nameof(Index));
@@ -153,6 +181,7 @@ namespace Application.MVC.Controllers
             {
                 ModelState.AddModelError("", ex.Message);
                 ViewBag.Genres = GetGenresList();
+                ViewBag.Albums = GetAlbumsList();
                 return View(data);
             }
         }

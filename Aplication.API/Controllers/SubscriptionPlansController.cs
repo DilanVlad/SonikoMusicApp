@@ -108,5 +108,21 @@ namespace Application.API.Controllers
         {
             return _context.SubscriptionPlans.Any(e => e.Id == id);
         }
+
+
+        // GET: api/SubscriptionPlans/active
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<SubscriptionPlan>>> GetActivePlans()
+        {
+            return await _context.SubscriptionPlans
+                .Where(sp => sp.IsActive)
+                .OrderBy(sp => sp.Price)
+                .ToListAsync();
+        }
+
+
+
+
+
     }
 }

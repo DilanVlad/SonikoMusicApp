@@ -132,5 +132,22 @@ namespace Application.API.Controllers
         {
             return _context.UserSubscriptions.Any(e => e.Id == id);
         }
+
+        // GET: api/UserSubscriptions/user/5/active
+        [HttpGet("user/{userId}/active")]
+        public async Task<ActionResult<UserSubscription>> GetActiveSubscription(int userId)
+        {
+            var subscription = await _context.UserSubscriptions
+                .Where(us => us.UserId == userId && us.IsActive && us.EndDate > DateTime.Now)
+                .Include(us => us.SubscriptionPlan)
+                .OrderByDescending(us => us.EndDate)
+                .FirstOrDefaultAsync();
+
+            if (subscription == null)
+                return NotFound("No active subscription found");
+
+            return subscription;
+        }
+
     }
 }

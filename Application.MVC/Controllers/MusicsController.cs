@@ -38,7 +38,7 @@ namespace Application.MVC.Controllers
 
         // GET: MusicsController/Details/5
         public ActionResult Details(int id)
-        {
+        { 
             var data = Crud<Music>.GetById(id);
             return View(data);
         }

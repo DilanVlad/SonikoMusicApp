@@ -133,7 +133,7 @@
                                         <i class="fas fa-plus"></i>
                                     </button>
 
-                                    @if (User.IsInRole("users") || User.IsInRole("admins"))
+                                    @if (User.IsInRole("users"))
                                     {
 
                                         
@@ -143,7 +143,23 @@
                                                 <i class="fas fa-download"></i> Añadir Descarga
                                             </button>
                                         </form>
+                                        <div class="music-favorite-actions" style="margin-top: 10px;">
+                                            <form asp-controller="Favorites" asp-action="AddMusic" method="post" style="display: inline;">
+                                                <input type="hidden" name="musicId" value="@music.Id" />
+                                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-heart"></i> Favorito
+                                                </button>
+                                            </form>
 
+                                            <form asp-controller="Favorites" asp-action="AddArtist" method="post" style="display: inline;">
+                                                <input type="hidden" name="artistId" value="@music.Artist.Id" />
+                                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                                <button type="submit" class="btn btn-outline-warning btn-sm">
+                                                    <i class="fas fa-star"></i> Artista Favorito
+                                                </button>
+                                            </form>
+                                        </div>
 
                                     }
                                 }
@@ -444,7 +460,67 @@
         .playlist-info .text-muted {
             font-size: 14px;
             color: #666;
-		}   
+		}
+
+
+    .music-favorite-actions .btn {
+        margin-right: 5px;
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+
+    /* Widget de favoritos en sidebar */
+    .favorites-widget {
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .recent-favorites {
+        max-height: 120px;
+        overflow-y: auto;
+        margin: 10px 0;
+    }
+
+        .recent-favorites .favorite-item {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+        }
+
+            .recent-favorites .favorite-item:last-child {
+                border-bottom: none;
+            }
+
+    /* Responsive para favoritos */
+    @@media (max-width: 768px) {
+        .favorites-tabs
+
+    {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .favorites-tab {
+        width: 80%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .favorites-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .favorite-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .favorite-actions .btn-favorite {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
 </style>
 
 <script>

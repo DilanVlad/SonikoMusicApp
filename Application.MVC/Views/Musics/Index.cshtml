@@ -26,7 +26,7 @@
                         <th>Género</th>
                         <th>Fecha Subida</th>
                         <th>Descripción</th>
-                        <th>Archivo</th>
+                        
                         <th>Artista</th>
                         <th>Álbum</th>
                         <th>Acciones</th>
@@ -50,11 +50,8 @@
                             <td title="@item.Description">
                                 @(string.IsNullOrEmpty(item.Description) ? "Sin descripción" :
                                                         (item.Description.Length > 30 ? item.Description.Substring(0, 30) + "..." : item.Description))
-                    </td>
-                    <td title="@item.FilePath">
-                        <i class="fas fa-file-audio"></i>
-                        @(item.FilePath?.Split('/').LastOrDefault() ?? "N/A")
-                    </td>
+                            </td>
+                    
                     <td>
                         @if (item.Artist != null)
                                 {

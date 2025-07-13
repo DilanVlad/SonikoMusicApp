@@ -1,0 +1,213 @@
+﻿.subscriptions-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: white;
+}
+
+.subscriptions-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+    .subscriptions-header h1 {
+        font-size: 2.5rem;
+        font-weight: 300;
+        margin-bottom: 10px;
+    }
+
+    .subscriptions-header p {
+        opacity: 0.8;
+        font-size: 1.1rem;
+    }
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.plan-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    position: relative;
+}
+
+    .plan-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .plan-card.featured {
+        border-color: #4ecdc4;
+        background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(68, 160, 141, 0.2));
+    }
+
+        .plan-card.featured::before {
+            content: "RECOMENDADO";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4ecdc4;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+.plan-header h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.plan-price {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #4ecdc4;
+    margin: 20px 0;
+}
+
+    .plan-price span {
+        font-size: 1rem;
+        opacity: 0.7;
+    }
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+    .plan-features li {
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+.feature-check {
+    color: #4ecdc4;
+    margin-left: 10px;
+}
+
+.feature-cross {
+    color: #ff6b6b;
+    margin-left: 10px;
+}
+
+.plan-action {
+    margin-top: 30px;
+}
+
+.btn-subscribe {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    border: none;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+    .btn-subscribe:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        color: white;
+    }
+
+    .btn-subscribe:disabled {
+        background: rgba(255, 255, 255, 0.3);
+        cursor: not-allowed;
+        transform: none;
+    }
+
+.current-plan {
+    background: rgba(76, 175, 80, 0.2);
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.subscription-status {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+}
+
+.status-active {
+    border-left: 4px solid #4caf50;
+}
+
+.status-expired {
+    border-left: 4px solid #ff6b6b;
+}
+
+.status-cancelled {
+    border-left: 4px solid #ff9800;
+}
+
+.subscription-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-subscription {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+    color: white;
+}
+
+.btn-renew {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .plans-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .plan-card {
+        padding: 20px;
+    }
+
+    .plan-price {
+        font-size: 2.5rem;
+    }
+
+    .subscription-actions {
+        flex-direction: column;
+    }
+
+        .subscription-actions .btn-subscription {
+            width: 100%;
+        }
+}

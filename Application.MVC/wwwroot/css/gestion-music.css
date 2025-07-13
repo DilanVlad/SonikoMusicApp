@@ -192,3 +192,334 @@
             font-size: 0.75rem;
         }
 }
+
+
+
+
+/* ===== ESTILOS PARA MUSIC DETAILS ===== */
+
+.music-details-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.btn-back {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+    .btn-back:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(-3px);
+        color: white;
+        text-decoration: none;
+    }
+
+.music-details-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 20px;
+}
+
+.music-cover-section {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.music-cover {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.music-primary-info h2 {
+    margin: 0 0 10px 0;
+    font-size: 2.5rem;
+    color: white;
+}
+
+.artist-name, .album-name {
+    font-size: 1.2rem;
+    margin: 8px 0;
+    opacity: 0.9;
+}
+
+.no-album {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+.music-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.info-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    .info-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .info-item label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #4ecdc4;
+        font-size: 0.9rem;
+    }
+
+    .info-item span {
+        color: white;
+        font-size: 1rem;
+    }
+
+.file-path {
+    word-break: break-all;
+    font-family: monospace;
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.embedded-player {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+    .embedded-player h3 {
+        margin: 0 0 15px 0;
+        color: white;
+    }
+
+.btn-play-large {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+    .btn-play-large:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+.music-actions-section, .management-section {
+    margin-bottom: 30px;
+}
+
+    .music-actions-section h3, .management-section h3 {
+        color: white;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.action-group {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+    .action-group h4 {
+        color: #4ecdc4;
+        margin: 0 0 15px 0;
+        font-size: 1rem;
+    }
+
+.action-form {
+    margin-bottom: 10px;
+}
+
+.btn-action {
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+.btn-favorite {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+}
+
+.btn-artist-favorite {
+    background: linear-gradient(45deg, #ffd93d, #ff9f43);
+}
+
+.btn-playlist {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.btn-download {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+}
+
+.btn-direct-download {
+    background: linear-gradient(45deg, #45b7d1, #3498db);
+}
+
+.btn-follow {
+    background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+.management-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-management {
+    padding: 12px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-edit {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.btn-delete {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+}
+
+.btn-list {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+}
+
+.btn-management:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .music-cover-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .music-cover {
+        width: 120px;
+        height: 120px;
+        font-size: 2.5rem;
+    }
+
+    .music-primary-info h2 {
+        font-size: 2rem;
+    }
+
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .management-actions {
+        flex-direction: column;
+    }
+}
+
+/* ===== SECCIÓN DE DESCARGA SIMPLIFICADA ===== */
+
+.download-section {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+    .download-section h3 {
+        color: white;
+        margin: 0 0 20px 0;
+        font-size: 1.3rem;
+    }
+
+.download-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-download-large {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .btn-download-large:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+/* Responsive para descarga */
+@media (max-width: 768px) {
+    .btn-download-large {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+}

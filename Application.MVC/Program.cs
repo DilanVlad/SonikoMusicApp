@@ -1,5 +1,6 @@
 using Application.API.Consumer;
 using Application.Models;
+using Application.Models.Favorite;
 using Application.Models.Identity;
 using Application.Models.Implementations;
 using Application.Models.Suscription;
@@ -27,8 +28,9 @@ namespace Application.MVC
             Crud<SubscriptionPlan>.EndPoint = "https://localhost:7095/api/SubscriptionPlans";
             Crud<UserSubscription>.EndPoint = "https://localhost:7095/api/UserSubscriptions";
 
-            
-            
+            Crud<FavoriteMusic>.EndPoint = "https://localhost:7095/api/FavoriteMusics";
+            Crud<FavoriteArtist>.EndPoint = "https://localhost:7095/api/FavoriteArtists";
+
 
             var builder = WebApplication.CreateBuilder(args);
 

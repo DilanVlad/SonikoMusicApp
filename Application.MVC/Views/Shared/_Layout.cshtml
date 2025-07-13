@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/LoginPartial.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/gestion-music.css" />
+
     
 </head>
 
@@ -48,20 +50,20 @@
             </div>
         </nav>
     </header>
+
     <aside>
         <nav>
-            
             <div class="container-fluid">
                 <div class="navbar-brand">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                         <span class="nav-icon">SonikoMusic</span>
-                     
                     </a>
                 </div>
                 <ul class="navbar-nav flex-column">
                     <!-- Sección Principal -->
-                    <div class="nav-section">
+                    <li class="nav-section">
                         <div class="nav-title">PRINCIPAL</div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Home" asp-action="Index">
                             <span class="nav-icon">🏠</span>
@@ -74,73 +76,78 @@
                             <span>Explorar</span>
                         </a>
                     </li>
-            </div>
 
-            <!-- Sección Música -->
-            <div class="nav-section">
-                <div class="nav-title">TU MÚSICA</div>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Musics" asp-action="Index">
-                        <span class="nav-icon">🎵</span>
-                        <span>Músicas</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Musics" asp-action="Create">
-                        <span class="nav-icon">⬆️</span>
-                        <span>Subir Música</span>
-                    </a>
-                </li>
-                
-            </div>
-
-            <!-- Sección Personal -->
-            <div class="nav-section">
-                <div class="nav-title">PERSONAL</div>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="PlayLists" asp-action="Index">
-                        <span class="nav-icon">❤️</span>
-                        <span>PlayLists</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Albums" asp-action="Index">
-                        <span class="nav-icon">📚</span>
-                        <span>Álbums</span>
-                    </a>
-                </li>
-                <!-- Después de "Mis Playlists" -->
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Follows" asp-action="Index">
-                        <i class="fas fa-heart"></i> Siguiendo
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Follows" asp-action="Followers">
-                        <i class="fas fa-users"></i> Seguidores
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Follows" asp-action="Discover">
-                        <i class="fas fa-compass"></i> Descubrir
-                    </a>
-                </li>
-                <!-- En la parte de admin -->
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Follows" asp-action="Index">
-                        <i class="fas fa-users-cog"></i> Gestión Follows
-                    </a>
-                </li>
-                @if (User.IsInRole("users") || User.IsInRole("admins"))
-                {
+                    <!-- Sección Música -->
+                    <li class="nav-section">
+                        <div class="nav-title">TU MÚSICA</div>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="@Url.Action("Index", "Downloads")">
-                            <i class="fas fa-download"></i> Mis Descargas
+                        <a class="nav-link" asp-controller="Musics" asp-action="Index">
+                            <span class="nav-icon">🎵</span>
+                            <span>Músicas</span>
                         </a>
                     </li>
-                }
-            </div>
-            </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Musics" asp-action="Create">
+                            <span class="nav-icon">⬆️</span>
+                            <span>Subir Música</span>
+                        </a>
+                    </li>
+
+                    <!-- Sección Personal -->
+                    <li class="nav-section">
+                        <div class="nav-title">PERSONAL</div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="PlayLists" asp-action="Index">
+                            <span class="nav-icon">❤️</span>
+                            <span>PlayLists</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Albums" asp-action="Index">
+                            <span class="nav-icon">📚</span>
+                            <span>Álbums</span>
+                        </a>
+                    </li>
+                    <!-- Después de "Mis Playlists" -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Follows" asp-action="Index">
+                            <span class="nav-icon">❤️</span>
+                            <span>Siguiendo</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Follows" asp-action="Followers">
+                            <i class="fas fa-users"></i> Seguidores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Follows" asp-action="Discover">
+                            <i class="fas fa-compass"></i> Descubrir
+                        </a>
+                    </li>
+                    <!-- En la parte de admin -->
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Follows" asp-action="Index">
+                            <i class="fas fa-users-cog"></i> Gestión Follows
+                        </a>
+                    </li>
+                    @if (User.IsInRole("users") || User.IsInRole("admins"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Downloads")">
+                                <i class="fas fa-download"></i> Mis Descargas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Favorites" asp-action="Index">
+                                <span class="nav-icon">❤️</span>
+                                <span>Mis Favoritos</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
             </div>
         </nav>
     </aside>
@@ -185,3 +192,27 @@
 
 </body>
 </html>
+
+<style>
+    /* Scrollbar completamente transparente por defecto */
+    ::-webkit-scrollbar {
+        width: 8px; /* Ancho del scrollbar */
+        height: 8px; /* Altura (para scroll horizontal) */
+    }
+
+    /* Fondo del track (transparente) */
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    /* Barra (thumb) casi transparente */
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2); /* Color con opacidad baja */
+        border-radius: 4px;
+    }
+
+        /* Efecto hover: la barra se hace visible */
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.4); /* Más opaco al pasar el mouse */
+        }
+</style>

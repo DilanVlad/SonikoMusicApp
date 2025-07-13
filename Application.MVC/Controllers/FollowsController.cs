@@ -10,70 +10,31 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.MVC.Controllers
 {
-    [Authorize(Roles = "admins,users,artists")]
+    [Authorize(Roles = "users,artists")]
     public class FollowsController : Controller
     {
         // GET: FollowController
         public ActionResult Index()
         {
-            if (User.IsInRole("admins"))
-            {
-                // Admin: todos los follows del sistema
-                var data = Crud<Follow>.GetAll();
-                ViewBag.CurrentSection = "following";
-                ViewBag.IsAdmin = true;
-                return View(data);
-            }
-            else
-            {
                 // Usuario: solo artistas que sigue
                 var currentUserId = GetCurrentUserId();
                 var data = Crud<Follow>.GetBy("following", currentUserId);
                 ViewBag.CurrentSection = "following";
-                ViewBag.IsAdmin = false;
                 return View(data);
-            }   
         }
         public ActionResult Followers()
         {
-            if (User.IsInRole("admins"))
-            {
-                // Admin: todos los follows (misma data, diferente vista)
-                var data = Crud<Follow>.GetAll();
-                ViewBag.CurrentSection = "followers";
-                ViewBag.IsAdmin = true;
-                return View("Index", data);
-            }
-            else
-            {
                 // Usuario: sus seguidores
                 var currentUserId = GetCurrentUserId();
                 var data = Crud<Follow>.GetBy("followers", currentUserId);
                 ViewBag.CurrentSection = "followers";
-                ViewBag.IsAdmin = false;
                 return View("Index", data);
-            }
+            
         }
 
         // GET: Follow/Discover - Descubrir 
         public ActionResult Discover()
         {
-            if (User.IsInRole("admins"))
-            {
-                // Admin: todos los artistas del sistema
-                var allMusics = Crud<Music>.GetAll();
-                var artists = allMusics.Select(m => m.Artist)
-                    .Where(a => a != null)
-                    .GroupBy(a => a.Id)  // Agrupar por ID
-                    .Select(g => g.First()) // Tomar el primero de cada grupo
-                    .ToList();
-
-                ViewBag.CurrentSection = "discover";
-                ViewBag.IsAdmin = true;
-                return View(artists);
-            }
-            else
-            {
                 // Usuario: artistas que no sigue
                 var allMusics = Crud<Music>.GetAll();
                 var artists = allMusics.Select(m => m.Artist)
@@ -89,9 +50,8 @@ namespace Application.MVC.Controllers
                 var availableArtists = artists.Where(a => !followingIds.Contains(a.Id) && a.Id != currentUserId).ToList();
 
                 ViewBag.CurrentSection = "discover";
-                ViewBag.IsAdmin = false;
                 return View(availableArtists);
-            }
+            
         }
 
 
@@ -126,8 +86,6 @@ namespace Application.MVC.Controllers
                 };
 
                 Crud<Follow>.Create(follow);
-                TempData["Success"] = "¡Ahora sigues a este artista!";
-
                 return RedirectToReturnUrl(returnUrl);
             }
             catch (Exception ex)
@@ -228,7 +186,7 @@ namespace Application.MVC.Controllers
         {
             var follow = Crud<Follow>.GetById(id);
 
-            if (follow.FollowerId != GetCurrentUserId() && !User.IsInRole("admins"))
+            if (follow.FollowerId != GetCurrentUserId())
             {
                 return Forbid();
             }

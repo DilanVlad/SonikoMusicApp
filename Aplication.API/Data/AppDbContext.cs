@@ -24,7 +24,6 @@ using Application.Models.Suscription;
         public DbSet<Application.Models.Playlist> Playlists { get; set; } = default!;
 
 
-        public DbSet<Application.Models.PlaylistMusic> PlaylistMusics { get; set; } = default!;
 
 
         public DbSet<Application.Models.Suscription.SubscriptionPlan> SubscriptionPlans { get; set; } = default!;
@@ -68,4 +67,8 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
             .HasForeignKey(f => f.ArtistId)
             .OnDelete(DeleteBehavior.NoAction);
     }
+        public DbSet<Application.Models.PlaylistMusic> PlaylistMusics { get; set; } = default!;
+
+        public DbSet<Application.Models.Favorite.FavoriteArtist> FavoriteArtists { get; set; } = default!;
+        public DbSet<Application.Models.Favorite.FavoriteMusic> FavoriteMusics { get; set; } = default!;
 }

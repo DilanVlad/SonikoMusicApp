@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Application.Models;
+using Application.Models.Favorite;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Application.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Application.API.Controllers
 {
@@ -35,7 +36,11 @@ namespace Application.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Music>> GetMusic(int id)
         {
-            var music = await _context.Musics.FindAsync(id);
+            var music = await _context.Musics
+                .Include(m => m.Artist)
+                .Include(m => m.Album)
+                .FirstOrDefaultAsync(m => m.Id == id);
+                
 
             if (music == null)
             {
@@ -52,6 +57,7 @@ namespace Application.API.Controllers
             var musics = await _context.Musics
                 .Where(m => m.ArtistId == artistId)
                 .Include(m => m.Artist)
+                .Include(m => m.Album)
                 .ToListAsync();
 
             return Ok(musics);
@@ -138,9 +144,12 @@ namespace Application.API.Controllers
                     m.Artist.FirstName.Contains(query) ||
                     m.Artist.LastName.Contains(query)
                 )
-                .ToListAsync();
+                .ToListAsync(); 
 
             return Ok(musics);
         }
+
+        
+
     }
 }

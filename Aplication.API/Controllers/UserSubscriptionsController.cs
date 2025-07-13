@@ -41,20 +41,7 @@ namespace Application.API.Controllers
                 .ToListAsync();
         }
 
-        // GET: api/UserSubscriptions/user/5/active 
-        [HttpGet("user/{userId}/active")]
-        public async Task<ActionResult<UserSubscription>> GetActiveSubscriptionByUser(int userId)
-        {
-            var subscription = await _context.UserSubscriptions
-                .Where(us => us.UserId == userId && us.IsActive && us.EndDate > DateTime.Now)
-                .Include(us => us.SubscriptionPlan)
-                .FirstOrDefaultAsync();
-
-            if (subscription == null)
-                return NotFound();
-
-            return subscription;
-        }
+        
 
         // GET: api/UserSubscriptions/5
         [HttpGet("{id}")]
@@ -140,7 +127,8 @@ namespace Application.API.Controllers
             var subscription = await _context.UserSubscriptions
                 .Where(us => us.UserId == userId && us.IsActive && us.EndDate > DateTime.Now)
                 .Include(us => us.SubscriptionPlan)
-                .OrderByDescending(us => us.EndDate)
+                .Include(us => us.User) 
+                .OrderByDescending(us => us.StartDate) 
                 .FirstOrDefaultAsync();
 
             if (subscription == null)
@@ -148,6 +136,42 @@ namespace Application.API.Controllers
 
             return subscription;
         }
+
+        // POST: api/UserSubscriptions/5/cancel
+        [HttpPost("{subscriptionId}/cancel")]
+        public async Task<IActionResult> CancelSubscription(int subscriptionId)
+        {
+            var subscription = await _context.UserSubscriptions.FindAsync(subscriptionId);
+            if (subscription == null)
+                return NotFound();
+
+            subscription.IsActive = false;
+            subscription.Status = UserSubscription.SubscriptionStatus.Cancelled;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // POST: api/UserSubscriptions/5/renew
+        [HttpPost("{subscriptionId}/renew")]
+        public async Task<IActionResult> RenewSubscription(int subscriptionId, [FromBody] int months = 1)
+        {
+            var subscription = await _context.UserSubscriptions
+                .Include(us => us.SubscriptionPlan)
+                .FirstOrDefaultAsync(us => us.Id == subscriptionId);
+
+            if (subscription == null)
+                return NotFound();
+
+            // Extender la suscripción
+            subscription.EndDate = subscription.EndDate.AddMonths(months);
+            subscription.IsActive = true;
+            subscription.Status = UserSubscription.SubscriptionStatus.Active;
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
 
     }
 }

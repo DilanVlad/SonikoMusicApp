@@ -39,6 +39,7 @@ namespace Application.MVC.Controllers
             try
             {
                 Crud<SubscriptionPlan>.Create(data);
+                TempData["Success"] = "Plan de suscripción creado exitosamente";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -63,6 +64,7 @@ namespace Application.MVC.Controllers
             try
             {
                 Crud<SubscriptionPlan>.Update(id, data);
+                TempData["Success"] = "Plan actualizado exitosamente";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -87,6 +89,7 @@ namespace Application.MVC.Controllers
             try
             {
                 Crud<SubscriptionPlan>.Delete(id);
+                TempData["Success"] = "Plan eliminado exitosamente";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -95,5 +98,34 @@ namespace Application.MVC.Controllers
                 return View(data);
             }
         }
+
+        // GET: SubscriptionPlans/Toggle/5 - Activar/Desactivar plan
+        public ActionResult Toggle(int id)
+        {
+            try
+            {
+                var plan = Crud<SubscriptionPlan>.GetById(id);
+                if (plan != null)
+                {
+                    plan.IsActive = !plan.IsActive;
+                    Crud<SubscriptionPlan>.Update(id, plan);
+                    TempData["Success"] = $"Plan {(plan.IsActive ? "activado" : "desactivado")} exitosamente";
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+
+
+
+
+
+
+
     }
 }

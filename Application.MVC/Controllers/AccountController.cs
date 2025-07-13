@@ -1,8 +1,10 @@
-﻿using Application.Models.Identity;
-using Application.MVC.Services;
+﻿using Application.API.Consumer;
+using Application.Models.Identity;
+using Application.Models.Suscription;
 using Application.MVC.Models;
 using Application.MVC.Models.Email;
 using Application.MVC.Models.ModifyAccount;
+using Application.MVC.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -55,10 +57,33 @@ namespace Application.MVC.Controllers
                     // Asignar rol
                     await _userManager.AddToRoleAsync(user, model.Role);
 
+                    // ⭐ NUEVO: Asignar plan gratuito por defecto
+                    try
+                    {
+                        var freePlan = Crud<SubscriptionPlan>.GetAll().FirstOrDefault(p => p.Price == 0 && p.Name.ToLower().Contains("gratuito"));
+                        if (freePlan != null)
+                        {
+                            var freeSubscription = new UserSubscription
+                            {
+                                UserId = user.Id,
+                                SubscriptionPlanId = freePlan.Id,
+                                StartDate = DateTime.Now,
+                                EndDate = DateTime.Now.AddYears(100), // Permanente
+                                IsActive = true,
+                                Status = UserSubscription.SubscriptionStatus.Active,
+                                PaymentMethod = "Gratuito"
+                            };
+                            Crud<UserSubscription>.Create(freeSubscription);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log error pero no interrumpir el registro
+                        System.Diagnostics.Debug.WriteLine($"Error asignando plan gratuito: {ex.Message}");
+                    }
+
                     // Login automático
                     await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    TempData.Clear();
                     return RedirectToAction("Index", "Home");
                 }
 

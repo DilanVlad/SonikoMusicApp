@@ -1,4 +1,4 @@
-using Application.API.Consumer;
+﻿using Application.API.Consumer;
 using Application.Models;
 using Application.Models.Favorite;
 using Application.Models.Identity;
@@ -119,7 +119,12 @@ namespace Application.MVC
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            
+            
             app.Run();
+
         }
+
+
     }
 }

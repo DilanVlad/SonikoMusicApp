@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Application.Models.Identity
+@using Application.API.Consumer
+@using Application.Models.Suscription
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
@@ -13,6 +15,24 @@
                     var avatarText = User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U";
                     var roles = await UserManager.GetRolesAsync(user);
                     var userRole = roles.FirstOrDefault();
+
+                    // Obtener plan actual del usuario
+                    UserSubscription currentSubscription = null;
+                    try
+                    {
+                        using (var client = new HttpClient())
+                        {
+                            var response = await client.GetAsync($"https://localhost:7095/api/UserSubscriptions/user/{user.Id}/active");
+                            if (response.IsSuccessStatusCode)
+                            {
+                                var json = await response.Content.ReadAsStringAsync();
+                                currentSubscription = Newtonsoft.Json.JsonConvert.DeserializeObject<UserSubscription>(json);
+                            }
+                        }
+                    }
+                    catch { }
+
+                    var planName = currentSubscription?.SubscriptionPlan?.Name ?? "Gratuito";
                 }
                 <span class="avatar-letter">@avatarText</span>
             </div>
@@ -26,22 +46,31 @@
                     {
                         case "admins":
                             <i class="fas fa-shield-alt me-1"></i>
-                
                             <span>Administrador</span>
                             break;
                         case "artists":
                             <i class="fas fa-palette me-1"></i>
-                
                             <span>Artista</span>
                             break;
                         default:
                             <i class="fas fa-user me-1"></i>
-                
                             <span>Usuario</span>
                             break;
                     }
                 </div>
             </li>
+
+            
+            @if (userRole == "users")
+            {
+                <li class="dropdown-header d-flex align-items-center gap-2 px-3 py-1">
+                    <div class="role-badge users">
+                        <i class="fas fa-play me-1" style="transform: rotate(90deg);"></i>
+                        <span>Plan @planName</span>
+                    </div>
+                </li>
+            }
+
             <li><hr class="dropdown-divider my-2"></li>
             <li>
                 <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" asp-controller="Account" asp-action="Profile">
@@ -49,10 +78,22 @@
                     <span>Mi perfil</span>
                 </a>
             </li>
+
+            @* Solo mostrar "Mejorar Plan" a usuarios normales *@
+            @if (userRole == "users")
+            {
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" asp-controller="UserSubscriptions" asp-action="Plans">
+                        <i class="fas fa-crown"></i>
+                        <span>Mejorar Plan</span>
+                    </a>
+                </li>
+            }
+
             @if (userRole == "artists")
             {
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" href="#">
+                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" asp-controller="Musics" asp-action="Index">
                         <i class="fas fa-music"></i>
                         <span>Mis canciones</span>
                     </a>
@@ -61,7 +102,7 @@
             @if (userRole == "admins")
             {
                 <li>
-                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" href="#">
+                    <a class="dropdown-item d-flex align-items-center gap-2 px-3 py-2" asp-controller="UserSubscriptions" asp-action="Index">
                         <i class="fas fa-cog"></i>
                         <span>Panel admin</span>
                     </a>
@@ -92,4 +133,3 @@ else
         </a>
     </div>
 }
-

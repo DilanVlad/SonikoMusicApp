@@ -57,7 +57,7 @@ namespace Application.MVC
             .AddRoles<Role>()
             .AddEntityFrameworkStores<AppDbContext>();
 
-            builder.Services.ConfigureApplicationCookie(options =>
+            builder.Services.ConfigureApplicationCookie(options => 
             {
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logout";       

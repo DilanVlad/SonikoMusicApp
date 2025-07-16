@@ -69,6 +69,8 @@ function loadPlayerState() {
         if (audioPlayer && player) {
             // Mostrar reproductor
             player.style.display = 'block';
+            player.classList.remove('closed'); 
+            showPlayer();
 
             // Configurar volumen
             audioPlayer.volume = playerState.volume || 0.7;
@@ -79,6 +81,10 @@ function loadPlayerState() {
 
             audioPlayer.src = track.audioUrl;
             audioPlayer.currentTime = playerState.currentTime || 0;
+            setTimeout(() => {
+                updateProgress(); // Actualizar barra de progreso después de cargar
+            }, 100);
+
 
             // Restaurar estado de reproducción
             if (playerState.isPlaying) {
@@ -100,7 +106,17 @@ function loadPlayerState() {
                 updatePlayPauseButton(false);
             }
 
-            console.log('🔄 Estado del reproductor restaurado');
+
+            setTimeout(() => {
+                const player = document.getElementById('musicPlayer');
+                if (player && currentPlaylist.length > 0) {
+                    player.style.display = 'block';
+                    player.classList.remove('closed');
+                    updateProgress(); 
+                }
+            }, 200);
+
+            console.log('Estado del reproductor restaurado');
             return true;
         }
 
@@ -199,6 +215,8 @@ function playTrack() {
     // Mostrar reproductor si está oculto
     if (player) {
         player.style.display = 'block';
+        player.classList.remove('closed');
+        showPlayer();
     }
 
     // Actualizar información de la canción
@@ -323,6 +341,8 @@ function updateProgress() {
 
         if (progressBar) {
             progressBar.value = progress;
+            progressBar.style.setProperty('--progress', progress + '%');
+
         }
 
         if (currentTime) {
@@ -481,3 +501,116 @@ if (typeof module !== 'undefined' && module.exports) {
         loadPlayerState
     };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== EVENTOS DEL REPRODUCTOR =====
+function closePlayer() {
+    const player = document.getElementById('musicPlayer');
+    if (player) {
+        // Pausar música si está reproduciéndose
+        if (isPlaying) {
+            togglePlayPause();
+        }
+
+        // Ocultar reproductor con animación
+        player.classList.add('closed');
+
+        console.log('🔇 Reproductor cerrado manualmente');
+    }
+}
+
+// Función mejorada para actualizar el botón play/pause
+function updatePlayPauseButton(playing) {
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    if (playPauseBtn) {
+        const icon = playPauseBtn.querySelector('i');
+        if (icon) {
+            icon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+        }
+
+        playPauseBtn.title = playing ? 'Pausar' : 'Reproducir';
+
+        // Agregar clase para cambiar color
+        if (playing) {
+            playPauseBtn.classList.add('playing');
+        } else {
+            playPauseBtn.classList.remove('playing');
+        }
+    }
+}
+
+// Función mejorada para actualizar información de la canción
+function updatePlayerUI(track) {
+    const songTitle = document.querySelector('.song-title');
+    const songArtist = document.querySelector('.song-artist');
+
+    if (songTitle && songArtist) {
+        songTitle.textContent = track.titulo;
+        songTitle.title = track.titulo; // Tooltip
+
+        songArtist.textContent = track.artista;
+        songArtist.title = track.artista; // Tooltip
+    }
+}
+
+// Mostrar reproductor con animación mejorada
+function showPlayer() {
+    const player = document.getElementById('musicPlayer');
+    if (player) {
+        player.classList.remove('closed');
+        player.style.display = 'block';
+    }
+}
+
+// Modificar la función playTrack para usar las nuevas funciones
+const originalPlayTrack = window.playTrack;
+if (originalPlayTrack) {
+    window.playTrack = function () {
+        showPlayer(); // Mostrar reproductor antes de reproducir
+        return originalPlayTrack.apply(this, arguments);
+    };
+}
+
+// Mejorar el formateo de tiempo
+function formatTime(seconds) {
+    if (isNaN(seconds) || seconds < 0) {
+        return '0:00';
+    }
+
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+
+    if (mins >= 60) {
+        const hours = Math.floor(mins / 60);
+        const remainingMins = mins % 60;
+        return `${hours}:${remainingMins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Inicialización mejorada
+document.addEventListener('DOMContentLoaded', function () {
+    // Ocultar reproductor inicialmente
+    const player = document.getElementById('musicPlayer');
+    if (player) {
+        player.classList.add('closed');
+    }
+
+    console.log('🎵 Reproductor mejorado inicializado');
+});

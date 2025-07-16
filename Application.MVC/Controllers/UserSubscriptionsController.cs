@@ -1,5 +1,6 @@
 ﻿using Application.API.Consumer;
 using Application.Models.Identity;
+using Application.Models.Implementations;
 using Application.Models.Suscription;
 using Application.MVC.Models;
 using Application.MVC.Services;
@@ -15,10 +16,13 @@ namespace Application.MVC.Controllers
     public class UserSubscriptionsController : Controller
     {
         private readonly IEmailService _emailService;
+        private readonly INotificationService _notificationService;
 
-        public UserSubscriptionsController(IEmailService emailService)
+
+        public UserSubscriptionsController(IEmailService emailService, INotificationService notificationService)
         {
             _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         // GET: UserSubscriptionsController
@@ -27,7 +31,12 @@ namespace Application.MVC.Controllers
             if (User.IsInRole("admins"))
             {
                 var allSubscriptions = Crud<UserSubscription>.GetAll();
+                var allNotifications = Crud<Notification>.GetAll();
+
                 ViewBag.IsAdmin = true;
+                ViewBag.AllNotifications = allNotifications.OrderByDescending(n => n.CreatedDate).ToList();
+                ViewBag.NotificationStats = GetNotificationStats(allNotifications);
+
                 return View(allSubscriptions);
             }
             else
@@ -38,6 +47,20 @@ namespace Application.MVC.Controllers
                 ViewBag.CurrentSubscription = GetActiveSubscription(currentUserId);
                 return View(userSubscriptions);
             }
+        }
+        private object GetNotificationStats(List<Notification> notifications)
+        {
+            return new
+            {
+                Total = notifications.Count,
+                Unread = notifications.Count(n => !n.IsRead),
+                NewMusic = notifications.Count(n => n.Type == Notification.NotificationType.NewMusic),
+                Welcome = notifications.Count(n => n.Type == Notification.NotificationType.Welcome),
+                System = notifications.Count(n => n.Type == Notification.NotificationType.System),
+                SubscriptionExpiry = notifications.Count(n => n.Type == Notification.NotificationType.SubscriptionExpiry),
+                Today = notifications.Count(n => n.CreatedDate.Date == DateTime.Today),
+                ThisWeek = notifications.Count(n => n.CreatedDate >= DateTime.Now.AddDays(-7))
+            };
         }
 
         // GET: UserSubscriptionsController/Details/5
@@ -214,6 +237,17 @@ namespace Application.MVC.Controllers
 
                 // Enviar comprobante por email
                 await SendPaymentConfirmation(model, plan, currentUser);
+
+
+                
+                try
+                {
+                    await _notificationService.NotifyUserSubscriptionAsync(currentUserId, plan.Name); // ✅ CAMBIAR
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error enviando notificación: {ex.Message}");
+                }
 
                 TempData["Success"] = $"¡Pago procesado exitosamente! Ahora tienes el plan {plan.Name}";
                 return RedirectToAction("PaymentSuccess");

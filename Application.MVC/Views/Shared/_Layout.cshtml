@@ -11,208 +11,211 @@
     <link rel="stylesheet" href="~/css/Layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/LoginPartial.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/gestion-music.css" />
+    <link rel="stylesheet" href="~/css/notifications.css" asp-append-version="true" />
 
-    
 </head>
-
-
 <body>
-    <header id="soniko-header" >
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm" id="soniko-navbar">
-            <div class="container-fluid">
-                
-                <!-- Search Bar -->
-                <div class="search-container flex-grow-1 mx-3">
-                    <form asp-controller="Musics" asp-action="Search" method="get" class="search-form">
-                        <div class="search-input-group">
-                            <input type="text"
-                                   name="query"
-                                   placeholder="Buscar música, artistas..."
-                                   class="search-input"
-                                   aria-label="Buscar música o artistas" />
-                            <button type="submit" class="search-button">
-                                <i class="fas fa-search search-icon"></i>
-                                <span class="search-text">BUSCAR</span>
-                            </button>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            <nav>
+                <div class="container-fluid">
+                    <div class="navbar-brand text-center">
+                        <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                            <span class="nav-icon">SonikoMusic</span>
+                        </a>
+                    </div>
+                    <ul class="navbar-nav flex-column">
+
+                        <li class="nav-section"><div class="nav-title">PRINCIPAL</div></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index"><span class="nav-icon">🏠</span><span> Inicio</span></a></li>
+
+                        @if (User.Identity!.IsAuthenticated)
+                        {
+                            @if (User.IsInRole("users"))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Musics" asp-action="Search"><span class="nav-icon">🔍</span><span> Explorar</span></a></li>
+                                
+                                <li class="nav-section"><div class="nav-title">TU BIBLIOTECA</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="PlayLists" asp-action="Index"><span class="nav-icon">☰♪</span><span> PlayLists</span></a></li>
+                                
+                                <li class="nav-section"><div class="nav-title">PERSONAL</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Follows" asp-action="Index"><i class="fas fa-users-cog"></i> Gestión Follows</a></li>
+                                <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Downloads")"><i class="fas fa-download"></i> Mis Descargas</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Favorites" asp-action="Index"><span class="nav-icon">❤️</span><span> Mis Favoritos</span></a></li>
+
+                                                
+                            }
+                            @if (User.IsInRole("artists"))
+                            {
+                                <li class="nav-section"><div class="nav-title">TU MÚSICA</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Musics" asp-action="Index"><span class="nav-icon">🎵</span><span> Músicas</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Musics" asp-action="Create"><span class="nav-icon">⬆️</span><span> Subir Música</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Albums" asp-action="Index"><span class="nav-icon">📚</span><span> Álbums</span></a></li>
+                                <li class="nav-section"><div class="nav-title">PERSONAL</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Follows" asp-action="Followers"><i class="fas fa-users"></i> Seguidores</a></li>
+                            }
+                            @if (User.IsInRole("admins"))
+                            {
+                                <li class="nav-section"><div class="nav-title">GESTIÓN</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="AdminDashboard" asp-action="Index"><span class="nav-icon">📊</span><span> Dashboard</span></a></li>
+
+                                <li class="nav-section"><div class="nav-title">USUARIOS</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="AdminUsers" asp-action="Index"><span class="nav-icon">👥</span><span> Todos</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="AdminUsers" asp-action="Artists"><span class="nav-icon">🎨</span><span> Artistas</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="AdminUsers" asp-action="RegularUsers"><span class="nav-icon">👤</span><span> Usuarios</span></a></li>
+
+                                <li class="nav-section"><div class="nav-title">CONTENIDO</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Musics" asp-action="Index"><span class="nav-icon">🎵</span><span> Músicas</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Albums" asp-action="Index"><span class="nav-icon">📀</span><span> Álbumes</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Playlists" asp-action="Index"><span class="nav-icon">📋</span><span> Playlists</span></a></li>
+
+                                <li class="nav-section"><div class="nav-title">SISTEMA</div></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="AdminNotifications" asp-action="Index"><span class="nav-icon">🔔</span><span> Notificaciones</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="UserSubscriptions" asp-action="Index"><span class="nav-icon">💳</span><span> Suscripciones</span></a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="SubscriptionPlans" asp-action="Index"><span class="nav-icon">💎</span><span> Planes</span></a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper" class="flex-grow-1">
+            <header id="soniko-header">
+                <nav class="navbar navbar-expand-lg" id="soniko-navbar">
+                    <div class="container-fluid">
+                        <button id="toggleSidebar" class="btn btn-light d-md-none ms-2 mt-2"><i class="fas fa-bars"></i></button>
+                        <button id="toggleSidebarDesktop" class="btn btn-outline-light d-none d-md-inline me-2"><i class="fas fa-bars"></i></button>
+                        <div class="search-container flex-grow-1">
+                            <form asp-controller="Musics" asp-action="Search" method="get" class="search-form">
+                                <div class="search-input-group">
+                                    <input type="text" name="query" placeholder="Buscar música, artistas..." class="search-input" aria-label="Buscar música o artistas" />
+                                    <button type="submit" class="search-button">
+                                        <i class="fas fa-search search-icon"></i>
+                                        <span class="search-text">BUSCAR </span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                        
+                        @if (User.IsInRole("users") || User.IsInRole("artists"))
+                        {
+                            <div class="notification-wrapper">
+                                <partial name="_NotificationBell" />
+                            </div>
+                        }
+
+                        <div class="d-flex">
+                            @await Html.PartialAsync("_LoginPartial")
+                        </div>
+                    </div>
+                </nav>
+            </header>
+            <main class="main-wrapper">
+                <div class="container-fluid pt-4">
+                    @RenderBody()
                 </div>
-
-                <!-- Login/Register or User Menu -->
-                <div class="d-flex">
-                    @await Html.PartialAsync("_LoginPartial")
-                </div>
-
-                <!-- Mobile toggle -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-        </nav>
-    </header>
-
-    <aside>
-        <nav>
-            <div class="container-fluid">
-                <div class="navbar-brand">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                        <span class="nav-icon">SonikoMusic</span>
-                    </a>
-                </div>
-                <ul class="navbar-nav flex-column">
-                    <!-- Sección Principal -->
-                    <li class="nav-section">
-                        <div class="nav-title">PRINCIPAL</div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Home" asp-action="Index">
-                            <span class="nav-icon">🏠</span>
-                            <span>Inicio</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Musics" asp-action="Search">
-                            <span class="nav-icon">🔍</span>
-                            <span>Explorar</span>
-                        </a>
-                    </li>
-
-                    <!-- Sección Música -->
-                    <li class="nav-section">
-                        <div class="nav-title">TU MÚSICA</div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Musics" asp-action="Index">
-                            <span class="nav-icon">🎵</span>
-                            <span>Músicas</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Musics" asp-action="Create">
-                            <span class="nav-icon">⬆️</span>
-                            <span>Subir Música</span>
-                        </a>
-                    </li>
-
-                    <!-- Sección Personal -->
-                    <li class="nav-section">
-                        <div class="nav-title">PERSONAL</div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="PlayLists" asp-action="Index">
-                            <span class="nav-icon">❤️</span>
-                            <span>PlayLists</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Albums" asp-action="Index">
-                            <span class="nav-icon">📚</span>
-                            <span>Álbums</span>
-                        </a>
-                    </li>
-                    <!-- Después de "Mis Playlists" -->
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Follows" asp-action="Index">
-                            <span class="nav-icon">❤️</span>
-                            <span>Siguiendo</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Follows" asp-action="Followers">
-                            <i class="fas fa-users"></i> Seguidores
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Follows" asp-action="Discover">
-                            <i class="fas fa-compass"></i> Descubrir
-                        </a>
-                    </li>
-                    <!-- En la parte de admin -->
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Follows" asp-action="Index">
-                            <i class="fas fa-users-cog"></i> Gestión Follows
-                        </a>
-                    </li>
-                    @if (User.IsInRole("users") || User.IsInRole("admins"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Index", "Downloads")">
-                                <i class="fas fa-download"></i> Mis Descargas
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Favorites" asp-action="Index">
-                                <span class="nav-icon">❤️</span>
-                                <span>Mis Favoritos</span>
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </div>
-        </nav>
-    </aside>
-
-
-    <div class="main-wrapper" id="soniko-main">
-        <div class="container-fluid">
-            <main role="main" class="pb-3">
-                @RenderBody()
+                <footer id="soniko-footer">
+                    &copy; 2025 - SonikoMusic 𐐘💥╾━╤デ╦︻ඞා
+                </footer>
             </main>
         </div>
-
-        <footer id="soniko-footer">
-            &copy; 2025 - SonikoMusic 
-        </footer>
     </div>
+
+    @if (User.IsInRole("users"))
+    {     
+        <!-- ⭐ REPRODUCTOR DE MÚSICA MEJORADO -->
+        <div id="musicPlayer" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(20,20,20,0.98)); color: white; z-index: 9999; border-top: 1px solid rgba(102, 126, 234, 0.3); backdrop-filter: blur(15px); box-shadow: 0 -5px 25px rgba(0,0,0,0.5);">
+        <div class="player-container">
+            <!-- Barra de progreso superior -->
+            <div class="top-progress-bar">
+                <input type="range" id="progressBar" class="progress-slider" min="0" max="100" value="0" oninput="seekTo()" />
+            </div>
+
+            <div class="player-content">
+                <!-- Información de la canción -->
+                <div class="song-section">
+                    <div class="song-artwork">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="song-info">
+                        <div id="currentSong" class="song-title">
+                            Ninguna canción seleccionada
+                        </div>
+                        <div class="song-artist">SonikoMusic</div>
+                    </div>
+                </div>
+
+                <!-- Controles centrales -->
+                <div class="controls-section">
+                    <button id="prevBtn" class="control-btn secondary" onclick="previousTrack()" title="Anterior">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button id="playPauseBtn" class="control-btn primary" onclick="togglePlayPause()" title="Reproducir/Pausar">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button id="nextBtn" class="control-btn secondary" onclick="nextTrack()" title="Siguiente">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+
+                <!-- Sección derecha con tiempo y controles adicionales -->
+                <div class="time-section">
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span>
+                        <span class="time-separator">/</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                    <div class="extra-controls">
+                        <button class="control-btn mini" onclick="setVolume(0.5)" title="Volumen">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <button id="stopBtn" class="control-btn mini" onclick="stopMusic()" title="Detener">
+                            <i class="fas fa-stop"></i>
+                        </button>
+                        <button id="closePlayer" class="control-btn mini close" onclick="closePlayer()" title="Cerrar reproductor">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio element oculto -->
+            <audio id="audioPlayer"
+                   preload="metadata"
+                   ontimeupdate="updateProgress()"
+                   onended="onSongEnd()"
+                   onloadedmetadata="updateProgress()">
+            </audio>
+        </div>
+    </div>
+
+    }
+
+
+
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/soniko-player.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
-    <!-- Reproductor de música fijo -->
-    <div id="musicPlayer" class="music-player" style="display: none;">
-        <div class="player-content">
-            <div class="song-info">
-                <span id="currentSong">Ninguna canción seleccionada</span>
-            </div>
-            <div class="player-controls">
-                <button id="prevBtn" onclick="previousTrack()" title="Anterior">⏮️</button>
-                <button id="playPauseBtn" onclick="togglePlayPause()">▶️</button>
-                <button id="nextBtn" onclick="nextTrack()" title="Siguiente">⏭️</button>
-                <button onclick="stopMusic()">⏹️</button>
-            </div>
-            <div class="progress-container">
-                <input type="range" id="progressBar" min="0" max="100" value="0" onchange="seekTo()">
-                <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
-            </div>
-        </div>
-        <audio id="audioPlayer" ontimeupdate="updateProgress()" onended="onSongEnd()"></audio>
-    </div>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebar = document.getElementById('toggleSidebar');
+        const toggleSidebarDesktop = document.getElementById('toggleSidebarDesktop');
 
+        toggleSidebar?.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        toggleSidebarDesktop?.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-hidden');
+        });
+    </script>
 </body>
 </html>
-
-<style>
-    /* Scrollbar completamente transparente por defecto */
-    ::-webkit-scrollbar {
-        width: 8px; /* Ancho del scrollbar */
-        height: 8px; /* Altura (para scroll horizontal) */
-    }
-
-    /* Fondo del track (transparente) */
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    /* Barra (thumb) casi transparente */
-    ::-webkit-scrollbar-thumb {
-        background: rgba(0, 0, 0, 0.2); /* Color con opacidad baja */
-        border-radius: 4px;
-    }
-
-        /* Efecto hover: la barra se hace visible */
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 0, 0, 0.4); /* Más opaco al pasar el mouse */
-        }
-</style>

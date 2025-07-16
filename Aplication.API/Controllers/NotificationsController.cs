@@ -138,5 +138,33 @@ namespace Application.API.Controllers
         {
             return _context.Notifications.Any(e => e.Id == id);
         }
+
+        // GET: api/Notifications/user/5/count
+        [HttpGet("user/{userId}/count")]
+        public async Task<ActionResult<int>> GetUnreadCount(int userId)
+        {
+            var count = await _context.Notifications
+                .CountAsync(n => n.UserId == userId && !n.IsRead);
+
+            return Ok(count);
+        }
+
+        // PUT: api/Notifications/markallread/user/5
+        [HttpPut("markallread/user/{userId}")]
+        public async Task<IActionResult> MarkAllAsRead(int userId)
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.UserId == userId && !n.IsRead)
+                .ToListAsync();
+
+            foreach (var notification in notifications)
+            {
+                notification.IsRead = true;
+            }
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
     }
 }

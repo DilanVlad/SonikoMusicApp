@@ -1,0 +1,22 @@
+﻿<div class="notification-bell-container">
+    <button class="notification-bell" onclick="toggleNotifications()" type="button">
+        <i class="fas fa-bell"></i>
+        <span class="notification-badge" id="notificationCount" style="display: none;">0</span>
+    </button>
+
+    <div class="notification-dropdown" id="notificationDropdown">
+        <div class="dropdown-header">
+            <i class="fas fa-bell"></i> Notificaciones
+        </div>
+        <div id="notificationsList">
+            <div style="padding: 20px; text-align: center; color: #666;">
+                Cargando notificaciones...
+            </div>
+        </div>
+        <div class="dropdown-footer">
+            <a href="@Url.Action("Index", "Notifications")">Ver todas las notificaciones</a>
+        </div>
+    </div>
+</div>
+<script src="~/js/soniko-notification.js"></script>
+

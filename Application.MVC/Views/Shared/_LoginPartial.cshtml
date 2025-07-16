@@ -12,7 +12,7 @@
             <div class="user-avatar">
                 @{
                     var user = await UserManager.GetUserAsync(User);
-                    var avatarText = User.Identity.Name?.Substring(0, 1).ToUpper() ?? "U";
+                    var avatarText = User.Identity!.Name?.Substring(0, 1).ToUpper() ?? "U";
                     var roles = await UserManager.GetRolesAsync(user);
                     var userRole = roles.FirstOrDefault();
 

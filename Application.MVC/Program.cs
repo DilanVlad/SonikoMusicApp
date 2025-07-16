@@ -4,6 +4,7 @@ using Application.Models.Favorite;
 using Application.Models.Identity;
 using Application.Models.Implementations;
 using Application.Models.Suscription;
+using Application.MVC.Services;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -30,6 +31,8 @@ namespace Application.MVC
 
             Crud<FavoriteMusic>.EndPoint = "https://localhost:7095/api/FavoriteMusics";
             Crud<FavoriteArtist>.EndPoint = "https://localhost:7095/api/FavoriteArtists";
+
+            Crud<User>.EndPoint = "https://localhost:7095/api/Users";
 
 
             var builder = WebApplication.CreateBuilder(args);
@@ -64,7 +67,11 @@ namespace Application.MVC
             
             
             builder.Services.AddScoped<Application.MVC.Services.IEmailService, Application.MVC.Services.EmailService>();
-            
+            builder.Services.AddHostedService<SubscriptionExpiryService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+
+
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -80,6 +87,7 @@ namespace Application.MVC
             {
                 options.Limits.MaxRequestBodySize = 100_000_000; // 100MB
             });
+
 
 
             var app = builder.Build();

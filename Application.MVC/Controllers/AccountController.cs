@@ -17,13 +17,17 @@ namespace Application.MVC.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<Role> _roleManager;
         private readonly IEmailService _emailService;
+        private readonly INotificationService _notificationService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, IEmailService emailService)
+
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager, IEmailService emailService, INotificationService notificationService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailService = emailService;
+            _notificationService = notificationService; 
+
         }
 
 
@@ -81,6 +85,19 @@ namespace Application.MVC.Controllers
                         // Log error pero no interrumpir el registro
                         System.Diagnostics.Debug.WriteLine($"Error asignando plan gratuito: {ex.Message}");
                     }
+
+                    try
+                    {
+                        await _notificationService.NotifyWelcomeAsync(user.Id, $"{user.FirstName} {user.LastName}");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error enviando notificación de bienvenida: {ex.Message}");
+                    }
+
+
+
+
 
                     // Login automático
                     await _signInManager.SignInAsync(user, isPersistent: false);

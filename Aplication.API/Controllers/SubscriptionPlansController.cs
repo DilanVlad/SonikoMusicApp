@@ -25,7 +25,6 @@ namespace Application.API.Controllers
         public async Task<ActionResult<IEnumerable<SubscriptionPlan>>> GetSubscriptionPlan()
         {
             return await _context.SubscriptionPlans
-                .Where(sp => sp.IsActive)
                 .OrderBy(sp => sp.Price)
                 .ToListAsync();
         }

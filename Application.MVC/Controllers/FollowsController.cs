@@ -2,6 +2,7 @@
 using Application.Models;
 using Application.Models.Identity;
 using Application.Models.Implementations;
+using Application.MVC.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,12 @@ namespace Application.MVC.Controllers
     [Authorize(Roles = "users,artists")]
     public class FollowsController : Controller
     {
+        private readonly INotificationService _notificationService;
+        public FollowsController(INotificationService notificationService)
+        {
+            _notificationService = notificationService;
+        }
+
         // GET: FollowController
         public ActionResult Index()
         {
@@ -86,6 +93,22 @@ namespace Application.MVC.Controllers
                 };
 
                 Crud<Follow>.Create(follow);
+
+                try
+                {
+                    var currentUser = GetCurrentUser();
+                    var followerName = $"{currentUser?.FirstName} {currentUser?.LastName}".Trim();
+
+                    _ = Task.Run(async () =>
+                    {
+                        await _notificationService.NotifyArtistNewFollowerAsync(artistId, followerName);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error notificando artista: {ex.Message}");
+                }
+
                 return RedirectToReturnUrl(returnUrl);
             }
             catch (Exception ex)
@@ -215,7 +238,7 @@ namespace Application.MVC.Controllers
         
         private int GetCurrentUserId()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity!.IsAuthenticated)
             {
                 var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
                 var userEmail = User.Identity.Name;
@@ -230,6 +253,16 @@ namespace Application.MVC.Controllers
                 return Redirect(returnUrl);
 
             return RedirectToAction("Search", "Musics");
+        }
+        private User GetCurrentUser()
+        {
+            if (User.Identity!.IsAuthenticated)
+            {
+                var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
+                var userEmail = User.Identity.Name;
+                return userManager.FindByNameAsync(userEmail).Result;
+            }
+            return null;
         }
     }
 }

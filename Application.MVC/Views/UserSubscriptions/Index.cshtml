@@ -273,6 +273,122 @@
             </div>
         </div>
 
+        var notificationStats = ViewBag.NotificationStats;
+        var allNotifications = ViewBag.AllNotifications as List<Application.Models.Implementations.Notification> ?? new List<Application.Models.Implementations.Notification>();
+
+        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; margin-top: 30px;">
+            <h4><i class="fas fa-bell"></i> Panel de Notificaciones del Sistema</h4>
+
+            <!-- Estadísticas de notificaciones -->
+            <div class="subscription-details" style="margin-bottom: 20px;">
+                <div class="detail-item">
+                    <div class="detail-label">Total Notificaciones</div>
+                    <div class="detail-value">@notificationStats.Total</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">No Leídas</div>
+                    <div class="detail-value">@notificationStats.Unread</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Hoy</div>
+                    <div class="detail-value">@notificationStats.Today</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Esta Semana</div>
+                    <div class="detail-value">@notificationStats.ThisWeek</div>
+                </div>
+            </div>
+
+            <!-- Breakdown por tipo -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div style="background: rgba(78, 205, 196, 0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; color: #4ecdc4; font-weight: bold;">@notificationStats.NewMusic</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Nueva Música</div>
+                </div>
+                <div style="background: rgba(102, 126, 234, 0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; color: #667eea; font-weight: bold;">@notificationStats.Welcome</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Bienvenidas</div>
+                </div>
+                <div style="background: rgba(255, 107, 107, 0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; color: #ff6b6b; font-weight: bold;">@notificationStats.System</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Sistema</div>
+                </div>
+                <div style="background: rgba(255, 193, 7, 0.2); padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; color: #ffc107; font-weight: bold;">@notificationStats.SubscriptionExpiry</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Vencimientos</div>
+                </div>
+            </div>
+
+            <!-- Últimas notificaciones del sistema -->
+            <h5 style="margin-top: 30px; margin-bottom: 15px;">
+                <i class="fas fa-history"></i> Actividad Reciente (Últimas 10)
+            </h5>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid rgba(255, 255, 255, 0.2);">
+                            <th style="padding: 10px; text-align: left;">Usuario</th>
+                            <th style="padding: 10px; text-align: left;">Tipo</th>
+                            <th style="padding: 10px; text-align: left;">Título</th>
+                            <th style="padding: 10px; text-align: left;">Fecha</th>
+                            <th style="padding: 10px; text-align: left;">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var notification in allNotifications.Take(10))
+                        {
+                            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                <td style="padding: 8px;">
+                                    @notification.User?.FirstName @notification.User?.LastName
+                                    <br><small style="opacity: 0.7;">ID: @notification.UserId</small>
+                                </td>
+                                <td style="padding: 8px;">
+                                    <span style="background: rgba(78, 205, 196, 0.3); padding: 4px 8px; border-radius: 10px; font-size: 0.8rem;">
+                                        @switch (notification.Type)
+                                        {
+                                            case Application.Models.Implementations.Notification.NotificationType.NewMusic:
+                                                <text>🎵 Música</text>
+                                                break;
+                                            case Application.Models.Implementations.Notification.NotificationType.Welcome:
+                                                <text>👋 Bienvenida</text>
+                                                break;
+                                            case Application.Models.Implementations.Notification.NotificationType.System:
+                                                <text>⚙️ Sistema</text>
+                                                break;
+                                            case Application.Models.Implementations.Notification.NotificationType.SubscriptionExpiry:
+                                                <text>⚠️ Vencimiento</text>
+                                                break;
+                                            default:
+                                                <text>📋 @notification.Type</text>
+                                                break;
+                                        }
+                                    </span>
+                                </td>
+                                <td style="padding: 8px;">
+                                    @notification.Title
+                                    <br><small style="opacity: 0.7;">@notification.Message.Substring(0, Math.Min(50, notification.Message.Length))...</small>
+                                </td>
+                                <td style="padding: 8px;">
+                                    @notification.CreatedDate.ToString("dd/MM HH:mm")
+                                </td>
+                                <td style="padding: 8px;">
+                                    @if (notification.IsRead)
+                                    {
+                                        <span style="color: #4caf50;">✅ Leída</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #ff9800;">🔸 No leída</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
         <!-- Lista de todas las suscripciones para admins -->
         <div style="background: rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; margin-top: 30px;">
             <h4><i class="fas fa-users"></i> Todas las Suscripciones</h4>

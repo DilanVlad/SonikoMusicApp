@@ -1,6 +1,7 @@
 ﻿using Application.API.Consumer;
 using Application.Models;
 using Application.Models.Identity;
+using Application.MVC.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Timeouts;
@@ -13,10 +14,17 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.MVC.Controllers
 {
+
+    
     public class MusicsController : Controller
     {
+        private readonly INotificationService _notificationService;
+        public MusicsController(INotificationService notificationService)
+        {
+            _notificationService = notificationService;
+        }
         // GET: MusicsController
-       [Authorize(Roles = "admins,artists")]
+        [Authorize(Roles = "admins,artists")]
         public ActionResult Index()
         {
             if (User.IsInRole("artists"))
@@ -116,6 +124,18 @@ namespace Application.MVC.Controllers
                 }
 
                 Crud<Music>.Create(data);
+                try
+                {
+                    _ = Task.Run(async () =>
+                    {
+                        await _notificationService.NotifyFollowersAsync(data.ArtistId, data.Title, data.Id);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error notificando seguidores: {ex.Message}");
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -231,7 +251,7 @@ namespace Application.MVC.Controllers
 
         private int GetCurrentUserId()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity!.IsAuthenticated)
             {
                 var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
                 var userEmail = User.Identity.Name;

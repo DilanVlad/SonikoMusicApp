@@ -17,8 +17,12 @@ namespace Application.MVC.Controllers
         public ActionResult Index()
         {
             var currentUserId = GetCurrentUserId();
-            var data = Crud<Notification>.GetBy("user", currentUserId);
-            return View(data);
+            var notifications = Crud<Notification>.GetBy("user", currentUserId);
+
+            // Ordenar por fecha descendente
+            var sortedNotifications = notifications.OrderByDescending(n => n.CreatedDate).ToList();
+
+            return View(sortedNotifications);
         }
 
         // GET: NotificationsController/Details/5
@@ -103,26 +107,7 @@ namespace Application.MVC.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult MarkAsRead(int id)
-        {
-            try
-            {
-                var notification = Crud<Notification>.GetById(id);
-                if (notification != null && notification.UserId == GetCurrentUserId())
-                {
-                    notification.IsRead = true;
-                    Crud<Notification>.Update(id, notification);
-                    TempData["Success"] = "Notificación marcada como leída";
-                }
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
-            }
-        }
+        
         private int GetCurrentUserId()
         {
             if (User.Identity.IsAuthenticated)
@@ -134,5 +119,148 @@ namespace Application.MVC.Controllers
             }
             return 0;
         }
+
+
+
+
+        // GET: Notifications/Unread
+        public ActionResult Unread()
+        {
+            var currentUserId = GetCurrentUserId();
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = client.GetAsync($"https://localhost:7095/api/Notifications/user/{currentUserId}/unread").Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var json = response.Content.ReadAsStringAsync().Result;
+                        var notifications = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Notification>>(json) ?? new List<Notification>();
+                        return View("Index", notifications.OrderByDescending(n => n.CreatedDate).ToList());
+                    }
+                }
+            }
+            catch { }
+
+            return View("Index", new List<Notification>());
+        }
+
+
+        // POST: Notifications/MarkAsRead/5
+        [HttpPost]
+        public ActionResult MarkAsRead(int id, string returnUrl = null)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = client.PutAsync($"https://localhost:7095/api/Notifications/{id}/markread", null).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["Success"] = "Notificación marcada como leída";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error: " + ex.Message;
+            }
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction("Index");
+        }
+
+        // POST: Notifications/MarkAllAsRead
+        [HttpPost]
+        public ActionResult MarkAllAsRead()
+        {
+            try
+            {
+                var currentUserId = GetCurrentUserId();
+
+                using (var client = new HttpClient())
+                {
+                    var response = client.PutAsync($"https://localhost:7095/api/Notifications/markallread/user/{currentUserId}", null).Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["Success"] = "Todas las notificaciones marcadas como leídas";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error: " + ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        // GET: Notifications/GetUnreadCount - Para AJAX
+        [HttpGet]
+        public JsonResult GetUnreadCount()
+        {
+            try
+            {
+                var currentUserId = GetCurrentUserId();
+
+                using (var client = new HttpClient())
+                {
+                    var response = client.GetAsync($"https://localhost:7095/api/Notifications/user/{currentUserId}/count").Result;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var countStr = response.Content.ReadAsStringAsync().Result;
+                        var count = int.Parse(countStr);
+                        return Json(new { count = count });
+                    }
+                }
+            }
+            catch { }
+
+            return Json(new { count = 0 });
+        }
+
+        // GET: Notifications/GetRecent - Para dropdown en navbar
+        [HttpGet]
+        public JsonResult GetRecent()
+        {
+            try
+            {
+                var currentUserId = GetCurrentUserId();
+                var notifications = Crud<Notification>.GetBy("user", currentUserId);
+
+                var recent = notifications
+                    .OrderByDescending(n => n.CreatedDate)
+                    .Take(3)
+                    .Select(n => new {
+                        id = n.Id,
+                        title = n.Title,
+                        message = n.Message,
+                        isRead = n.IsRead,
+                        createdDate = n.CreatedDate.ToString("dd/MM HH:mm"),
+                        actionUrl = n.ActionUrl
+                    })
+                    .ToList();
+
+                return Json(recent);
+            }
+            catch
+            {
+                return Json(new List<object>());
+            }
+        }
+
+        
+
+
+
+
+
+
+
     }
 }

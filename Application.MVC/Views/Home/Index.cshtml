@@ -9,14 +9,15 @@
     var user = Context.User;
 }
 
-@if (!user.Identity.IsAuthenticated)
+@if (!user.Identity!.IsAuthenticated)
 {
     <div class="hero-panel">
         <h1 class="hero-title">Bienvenido a <span style="color:#00f7ff;">SonikoMusic</span></h1>
         <p class="hero-subtitle">La plataforma donde los artistas independientes y los amantes de la música se encuentran.</p>
         <div class="hero-actions">
-            <a class="btn btn-glow" href="/Account/Register">Únete Ahora</a>
-            <a class="btn btn-outline" href="/Account/Login">Iniciar Sesión</a>
+            <a class="btn btn-glow" asp-area="" asp-controller="Account" asp-action="Register"> Únete Ahora </a>
+            <a class="btn btn-outline" asp-area="" asp-controller="Account" asp-action="Login"> Iniciar Sesión </a>
+
         </div>
     </div>
 

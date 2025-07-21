@@ -24,6 +24,7 @@ namespace Application.Models.Implementations
         {
             Pending = 1,
             InProgress = 2,
+
             Completed = 3,
             Failed = 4,
             Deleted = 5

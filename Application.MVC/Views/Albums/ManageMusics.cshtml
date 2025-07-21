@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Gestionar Música del Álbum";
+    var album = ViewBag.Album as Application.Models.Album;
+    var assignedMusics = ViewBag.AssignedMusics as List<Application.Models.Music>;
+    var availableMusics = ViewBag.AvailableMusics as List<Application.Models.Music>;
+}
+
+<link rel="stylesheet" href="~/css/gestion-music.css" />
+
+<div class="gestion-music-container">
+    <div class="gestion-header">
+        <h1><i class="fas fa-compact-disc"></i> Gestionar Álbum: @album.Name</h1>
+        <div>
+            <a asp-action="Details" asp-route-id="@album.Id" class="btn-create">
+                <i class="fas fa-eye"></i> Ver Álbum
+            </a>
+            <a asp-action="Index" class="btn-create" style="background: linear-gradient(45px, #6c757d, #5a6268);">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Música en el Álbum -->
+        <div class="col-md-6">
+            <div class="music-table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-music"></i> Música en el Álbum</h4>
+                    <span class="badge bg-success">@assignedMusics.Count canción(es)</span>
+                </div>
+
+                @if (assignedMusics.Any())
+                {
+                    <div class="tracks-list">
+                        @foreach (var music in assignedMusics.OrderBy(m => m.Title))
+                        {
+                            <div class="track-item">
+                                <div class="track-info">
+                                    <div class="track-number">@(assignedMusics.IndexOf(music) + 1)</div>
+                                    <div class="track-details">
+                                        <h6 class="track-title">@music.Title</h6>
+                                        <p class="track-meta">
+                                            @music.Genre • @(music.Duration ?? "N/A")
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="track-actions">
+                                    <form asp-action="RemoveMusicFromAlbum" method="post" style="display: inline;">
+                                        <input type="hidden" name="albumId" value="@album.Id" />
+                                        <input type="hidden" name="musicId" value="@music.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('¿Quitar @music.Title del álbum?')">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-compact-disc"></i>
+                        <h5>Álbum sin canciones</h5>
+                        <p>Agrega música desde la lista disponible</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Música Disponible -->
+        <div class="col-md-6">
+            <div class="music-table-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-music"></i> Música Disponible</h4>
+                    <span class="badge bg-primary">@availableMusics.Count disponible(s)</span>
+                </div>
+
+                @if (availableMusics.Any())
+                {
+                    <div class="tracks-list">
+                        @foreach (var music in availableMusics.OrderBy(m => m.Title))
+                        {
+                            <div class="track-item">
+                                <div class="track-info">
+                                    <div class="track-number">
+                                        <i class="fas fa-music"></i>
+                                    </div>
+                                    <div class="track-details">
+                                        <h6 class="track-title">@music.Title</h6>
+                                        <p class="track-meta">
+                                            @music.Genre • @(music.Duration ?? "N/A")
+                                            @if (music.AlbumId.HasValue)
+                                            {
+                                                <span class="text-warning"> • En otro álbum</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="track-actions">
+                                    <form asp-action="AddMusicToAlbum" method="post" style="display: inline;">
+                                        <input type="hidden" name="albumId" value="@album.Id" />
+                                        <input type="hidden" name="musicId" value="@music.Id" />
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="fas fa-music"></i>
+                        <h5>No hay música disponible</h5>
+                        <p>Todas las canciones están asignadas a álbumes</p>
+                        <a asp-controller="Musics" asp-action="Create" class="btn-create">
+                            <i class="fas fa-plus"></i> Subir Nueva Música
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .tracks-list {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+    .track-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+        .track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .track-item:last-child {
+            border-bottom: none;
+        }
+
+    .track-info {
+        display: flex;
+        align-items: center;
+        flex: 1;
+    }
+
+    .track-number {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 15px;
+        font-size: 14px;
+    }
+
+    .track-details {
+        flex: 1;
+    }
+
+    .track-title {
+        margin: 0 0 4px 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .track-meta {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+    }
+
+    .track-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .badge {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+</style>

@@ -44,7 +44,11 @@ namespace Application.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Album>> GetAlbum(int id)
         {
-            var album = await _context.Albums.FindAsync(id);
+            var album = await _context.Albums
+                .Include(a => a.Artist)
+                .Include(a => a.Musics)
+                    .ThenInclude(m => m.Artist)
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (album == null)
             {

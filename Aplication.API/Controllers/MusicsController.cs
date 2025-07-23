@@ -133,7 +133,7 @@ namespace Application.API.Controllers
         {
             if (string.IsNullOrEmpty(query))
             {
-                return BadRequest("Query cannot be empty");
+                return BadRequest("Query cannot be empty"); 
             }
 
             var musics = await _context.Musics

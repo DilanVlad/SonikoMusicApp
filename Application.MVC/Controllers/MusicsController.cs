@@ -292,37 +292,78 @@ namespace Application.MVC.Controllers
                 return "3:00";
             }
         }
-
-
-        [Authorize(Roles = "admins,artists,users")]
+        [Authorize(Roles = "users")] // Solo usuarios
         public ActionResult Search(string query)
         {
-            // All Musics
-            if (string.IsNullOrEmpty(query))
+            try
             {
+                // Obtener todos los datos base
                 var allMusics = Crud<Music>.GetAll();
-                ViewBag.SearchQuery = "";
-                ViewBag.ResultCount = allMusics.Count;
-                ViewBag.ShowingAll = true; // Para cambiar el mensaje
-                return View("SearchResults", allMusics);
+                var allAlbums = Crud<Album>.GetAll();
+                var allPlaylists = Crud<Playlist>.GetAll()
+                    .Where(p => p.IsPublic) // Solo públicas
+                    .ToList();
+
+                // Extraer artistas únicos de las músicas
+                var allArtists = allMusics
+                    .Where(m => m.Artist != null)
+                    .GroupBy(m => m.Artist.Id)
+                    .Select(g => g.First().Artist)
+                    .ToList();
+
+                if (string.IsNullOrEmpty(query))
+                {
+                    // Mostrar todo
+                    ViewBag.SearchQuery = "";
+                    ViewBag.ShowingAll = true;
+                    ViewBag.ResultCount = allMusics.Count;
+                }
+                else
+                {
+                    // Filtrar por búsqueda
+                    allMusics = allMusics.Where(m =>
+                        m.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        (m.Artist?.FirstName + " " + m.Artist?.LastName).Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        m.Artist?.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase) == true ||
+                        m.Artist?.LastName.Contains(query, StringComparison.OrdinalIgnoreCase) == true
+                    ).ToList();
+
+                    allAlbums = allAlbums.Where(a =>
+                        a.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        (a.Artist?.FirstName + " " + a.Artist?.LastName).Contains(query, StringComparison.OrdinalIgnoreCase)
+                    ).ToList();
+
+                    allArtists = allArtists.Where(a =>
+                        (a.FirstName + " " + a.LastName).Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        a.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        a.LastName.Contains(query, StringComparison.OrdinalIgnoreCase)
+                    ).ToList();
+
+                    allPlaylists = allPlaylists.Where(p =>
+                        p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+                        p.Description.Contains(query, StringComparison.OrdinalIgnoreCase)
+                    ).ToList();
+
+                    ViewBag.SearchQuery = query;
+                    ViewBag.ShowingAll = false;
+                    ViewBag.ResultCount = allMusics.Count;
+                }
+
+                
+                ViewBag.Albums = allAlbums.Take(6).ToList();
+                ViewBag.Artists = allArtists.Take(8).ToList();
+                ViewBag.Playlists = allPlaylists.Take(8).ToList();
+
+                return View("SearchDashboard", allMusics.Take(12).ToList());
             }
-
-            var allMusicsFiltered = Crud<Music>.GetAll();
-
-            // Fuzzy search 
-            var filteredMusics = allMusicsFiltered.Where(m =>
-                m.Title.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                (m.Artist?.FirstName + " " + m.Artist?.LastName).Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                m.Artist?.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase) == true ||
-                m.Artist?.LastName.Contains(query, StringComparison.OrdinalIgnoreCase) == true
-            ).ToList();
-
-            ViewBag.SearchQuery = query;
-            ViewBag.ResultCount = filteredMusics.Count;
-            ViewBag.ShowingAll = false;
-
-            return View("SearchResults", filteredMusics);
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Error en la búsqueda: " + ex.Message;
+                return View("SearchDashboard", new List<Music>());
+            }
         }
+
+        
 
     }
 }

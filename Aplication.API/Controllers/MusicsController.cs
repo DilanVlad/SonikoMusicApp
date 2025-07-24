@@ -127,6 +127,8 @@ namespace Application.API.Controllers
         }
 
 
+
+
         
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Music>>> SearchMusics(string query)

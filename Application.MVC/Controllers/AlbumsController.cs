@@ -10,7 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.MVC.Controllers
 {
-    [Authorize(Roles = "admins,artists")]
+    [Authorize(Roles = "admins,artists,users")]
     public class AlbumsController : Controller
     {
         // GET: AlbumsController

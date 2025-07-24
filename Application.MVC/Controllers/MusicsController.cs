@@ -292,6 +292,7 @@ namespace Application.MVC.Controllers
                 return "3:00";
             }
         }
+
         [Authorize(Roles = "users")] // Solo usuarios
         public ActionResult Search(string query)
         {
@@ -341,7 +342,7 @@ namespace Application.MVC.Controllers
 
                     allPlaylists = allPlaylists.Where(p =>
                         p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
-                        p.Description.Contains(query, StringComparison.OrdinalIgnoreCase)
+                        (!string.IsNullOrEmpty(p.Description) && p.Description.Contains(query, StringComparison.OrdinalIgnoreCase))
                     ).ToList();
 
                     ViewBag.SearchQuery = query;
@@ -349,21 +350,20 @@ namespace Application.MVC.Controllers
                     ViewBag.ResultCount = allMusics.Count;
                 }
 
-                
+                // Pasar datos a la vista
                 ViewBag.Albums = allAlbums.Take(6).ToList();
                 ViewBag.Artists = allArtists.Take(8).ToList();
                 ViewBag.Playlists = allPlaylists.Take(8).ToList();
 
-                return View("SearchDashboard", allMusics.Take(12).ToList());
+                return View("SearchResults", allMusics.Take(12).ToList());
             }
             catch (Exception ex)
             {
                 TempData["Error"] = "Error en la búsqueda: " + ex.Message;
-                return View("SearchDashboard", new List<Music>());
+                return View("SearchResults", new List<Music>());
             }
         }
 
-        
 
     }
 }

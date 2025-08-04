@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href="~/css/notifications.css" asp-append-version="true" />
 
 </head>
+
 <body>
     <div class="d-flex" id="wrapper">
         <!-- Sidebar -->
@@ -71,8 +73,7 @@
                                 <li class="nav-item"><a class="nav-link" asp-controller="Playlists" asp-action="Index"><span class="nav-icon">📋</span><span> Playlists</span></a></li>
 
                                 <li class="nav-section"><div class="nav-title">SISTEMA</div></li>
-                                <li class="nav-item"><a class="nav-link" asp-controller="AdminNotifications" asp-action="Index"><span class="nav-icon">🔔</span><span> Notificaciones</span></a></li>
-                                <li class="nav-item"><a class="nav-link" asp-controller="UserSubscriptions" asp-action="Index"><span class="nav-icon">💳</span><span> Suscripciones</span></a></li>
+                                
                                 <li class="nav-item"><a class="nav-link" asp-controller="SubscriptionPlans" asp-action="Index"><span class="nav-icon">💎</span><span> Planes</span></a></li>
                             }
                         }
@@ -88,7 +89,10 @@
                     <div class="container-fluid">
                         <button id="toggleSidebar" class="btn btn-light d-md-none ms-2 mt-2"><i class="fas fa-bars"></i></button>
                         <button id="toggleSidebarDesktop" class="btn btn-outline-light d-none d-md-inline me-2"><i class="fas fa-bars"></i></button>
-                        <div class="search-container flex-grow-1">
+                        
+                        @if (User.IsInRole("users"))
+                        {
+                           <div class="search-container flex-grow-1">
                             <form asp-controller="Musics" asp-action="Search" method="get" class="search-form">
                                 <div class="search-input-group">
                                     <input type="text" name="query" placeholder="Buscar música, artistas..." class="search-input" aria-label="Buscar música o artistas" />
@@ -99,6 +103,9 @@
                                 </div>
                             </form>
                         </div>
+                
+                        }
+
                         
                         @if (User.IsInRole("users") || User.IsInRole("artists"))
                         {
@@ -113,6 +120,7 @@
                     </div>
                 </nav>
             </header>
+
             <main class="main-wrapper">
                 <div class="container-fluid pt-4">
                     @RenderBody()
@@ -126,7 +134,7 @@
 
     @if (User.IsInRole("users"))
     {     
-        <!-- ⭐ REPRODUCTOR DE MÚSICA MEJORADO -->
+        <!-- ⭐ REPRODUCTOR DE MÚSICA -->
         <div id="musicPlayer" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(135deg, rgba(0,0,0,0.95), rgba(20,20,20,0.98)); color: white; z-index: 9999; border-top: 1px solid rgba(102, 126, 234, 0.3); backdrop-filter: blur(15px); box-shadow: 0 -5px 25px rgba(0,0,0,0.5);">
         <div class="player-container">
             <!-- Barra de progreso superior -->
@@ -142,7 +150,7 @@
                     </div>
                     <div class="song-info">
                         <div id="currentSong" class="song-title">
-                            Ninguna canción seleccionada
+                            Canción seleccionada
                         </div>
                         <div class="song-artist">SonikoMusic</div>
                     </div>
@@ -193,6 +201,7 @@
     </div>
 
     }
+
 
 
 

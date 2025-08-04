@@ -63,16 +63,20 @@
 
                     <div class="artist-actions">
                             <!-- Usuario normal: dejar de seguir -->
+                        @if (User.IsInRole("users"))
+                        {
                             <form asp-action="UnfollowArtist" method="post" style="display: inline;">
-                                <input type="hidden" name="artistId" value="@follow.ArtistId" />
-                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                                <button type="submit" class="btn-follow btn-unfollow" onclick="return confirm('¿Dejar de seguir a este artista?')">
-                                    <i class="fas fa-user-minus"></i> Dejar de seguir
-                                </button>
-                            </form>
-                        <a href="@Url.Action("Search", "Musics", new { query = artist?.FirstName + " " + artist?.LastName })" class="btn-follow btn-view-music">
-                            <i class="fas fa-music"></i> Ver Música
-                        </a>
+                                    <input type="hidden" name="artistId" value="@follow.ArtistId" />
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                    <button type="submit" class="btn-follow btn-unfollow" onclick="return confirm('¿Dejar de seguir a este artista?')">
+                                        <i class="fas fa-user-minus"></i> Dejar de seguir
+                                    </button>
+                                </form>
+                            <a href="@Url.Action("Search", "Musics", new { query = artist?.FirstName + " " + artist?.LastName })" class="btn-follow btn-view-music">
+                                <i class="fas fa-music"></i> Ver Música
+                            </a>
+                            
+                        }
                     </div>
                 </div>
             }

@@ -119,8 +119,8 @@ namespace Application.MVC.Controllers
             return new List<SelectListItem>
             {
                 new SelectListItem { Value = "users", Text = "Usuario" },
-                new SelectListItem { Value = "artists", Text = "Artista" },
-                new SelectListItem { Value = "admins", Text = "Administrador" }
+                new SelectListItem { Value = "artists", Text = "Artista" }
+                
             };
         }
 
